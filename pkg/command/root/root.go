@@ -7,46 +7,24 @@ import (
 )
 
 var example = `
-$ rf config init
+$ rf config edit
 $ rf ext create
 `
 
 func NewCmdRoot() *cobra.Command {
 	var rootCmd = &cobra.Command{
-		Use:   "rf <command> <subcommand> [flags]",
-		Short: "Include some shortcut for RedForester",
+		Use:           "rf <command> <subcommand> [flags]",
+		Short:         "CLI include some shortcut for RedForester",
 		SilenceErrors: true,
 		SilenceUsage:  true,
-		Example: example,
+		Example:       example,
+		Run: func(cmd *cobra.Command, args []string) {
+			_ = cmd.Help()
+		},
 	}
-
-	rootCmd.SetUsageFunc(rootUsageFunc)
 
 	rootCmd.AddCommand(version.NewCmdVersion())
 	rootCmd.AddCommand(config.NewCmdConfig())
 
 	return rootCmd
-}
-
-func rootUsageFunc(command *cobra.Command) error {
-	command.Printf("Usage:  %s", command.UseLine())
-
-	subcommands := command.Commands()
-	if len(subcommands) > 0 {
-		command.Print("\n\nAvailable commands:\n")
-		for _, c := range subcommands {
-			if c.Hidden {
-				continue
-			}
-			command.Printf("  %s\n", c.Name())
-		}
-		return nil
-	}
-
-	flagUsages := command.LocalFlags().FlagUsages()
-	if flagUsages != "" {
-		command.Println("\n\nFlags:")
-		command.Print(flagUsages)
-	}
-	return nil
 }

@@ -10,6 +10,9 @@ import (
 var defaultValue = []byte(`[client]
 username = "not_set"
 password_hash = "not_set"
+
+[rf]
+base_url = "https://app.redforester.com"
 `)
 
 // InitConfig restore config structure in path
