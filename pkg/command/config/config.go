@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/redforester/rf-cli/pkg/command/config/edit"
+	"github.com/deissh/rf-cli/pkg/command/config/edit"
 	"github.com/spf13/cobra"
 )
 

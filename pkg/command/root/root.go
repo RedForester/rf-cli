@@ -1,14 +1,16 @@
 package root
 
 import (
-	"github.com/redforester/rf-cli/pkg/command/config"
-	"github.com/redforester/rf-cli/pkg/command/version"
+	"github.com/deissh/rf-cli/pkg/command/config"
+	"github.com/deissh/rf-cli/pkg/command/extension"
+	"github.com/deissh/rf-cli/pkg/command/version"
+	"github.com/deissh/rf-cli/pkg/utils"
 	"github.com/spf13/cobra"
 )
 
 var example = `
 $ rf config edit
-$ rf ext create
+$ rf ext init
 `
 
 func NewCmdRoot() *cobra.Command {
@@ -25,6 +27,9 @@ func NewCmdRoot() *cobra.Command {
 
 	rootCmd.AddCommand(version.NewCmdVersion())
 	rootCmd.AddCommand(config.NewCmdConfig())
+	rootCmd.AddCommand(extension.NewCmdExt())
+
+	utils.DisableAuthCheck(rootCmd)
 
 	return rootCmd
 }

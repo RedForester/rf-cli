@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/redforester/rf-cli/internal/config"
-	"github.com/redforester/rf-cli/pkg/command/root"
+	"fmt"
+	"github.com/deissh/rf-cli/internal/config"
+	"github.com/deissh/rf-cli/pkg/command/root"
 	"github.com/spf13/cobra"
-	"log"
 	"os"
 )
 
@@ -14,14 +14,22 @@ func main() {
 
 // Execute and return status code
 func Execute() int {
-	cobra.OnInitialize(config.InitConfig)
+	cobra.OnInitialize(OnInitialize)
 
 	rootCmd := root.NewCmdRoot()
 
 	if err := rootCmd.Execute(); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 		return 1
 	}
 
 	return 0
+}
+
+func OnInitialize() {
+	err := config.InitConfig()
+	if err != nil {
+		fmt.Println("[error]", err)
+		os.Exit(1)
+	}
 }

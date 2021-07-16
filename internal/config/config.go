@@ -1,13 +1,13 @@
 package config
 
 import (
+	"fmt"
 	"github.com/spf13/viper"
-	"log"
 	"strings"
 )
 
 type Config struct {
-	Rf RfConfig
+	Rf     RfConfig
 	Client ClientConfig
 }
 
@@ -16,7 +16,7 @@ type RfConfig struct {
 }
 
 type ClientConfig struct {
-	Username string `toml:"username"`
+	Username     string `toml:"username"`
 	PasswordHash string `toml:"password_hash"`
 }
 
@@ -25,12 +25,12 @@ func New() *Config {
 
 	err := viper.Unmarshal(c)
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Println(err)
 	}
 
 	baseURL := c.Rf.BaseURL
 	if len(baseURL) == 0 {
-		log.Fatalln("edit base url first, use `rf config init`")
+		fmt.Println("please edit base url first; `rf config edit`")
 	}
 	if !strings.HasPrefix(baseURL, "http") {
 		baseURL = "https://" + baseURL
