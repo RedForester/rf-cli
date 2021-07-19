@@ -2,9 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/deissh/rf-cli/internal/config"
 	"github.com/deissh/rf-cli/pkg/command/root"
-	"github.com/spf13/cobra"
+	"github.com/deissh/rf-cli/pkg/factory"
 	"os"
 )
 
@@ -14,9 +13,9 @@ func main() {
 
 // Execute and return status code
 func Execute() int {
-	cobra.OnInitialize(OnInitialize)
+	cmdFactory := factory.New()
 
-	rootCmd := root.NewCmdRoot()
+	rootCmd := root.NewCmdRoot(cmdFactory)
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
@@ -24,12 +23,4 @@ func Execute() int {
 	}
 
 	return 0
-}
-
-func OnInitialize() {
-	err := config.InitConfig()
-	if err != nil {
-		fmt.Println("[error]", err)
-		os.Exit(1)
-	}
 }

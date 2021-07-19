@@ -3,10 +3,11 @@ package version
 import (
 	"fmt"
 	"github.com/deissh/rf-cli/internal/build"
+	"github.com/deissh/rf-cli/pkg/factory"
 	"github.com/spf13/cobra"
 )
 
-func NewCmdVersion() *cobra.Command {
+func NewCmdVersion(f *factory.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use: "version",
 		Run: func(cmd *cobra.Command, args []string) {

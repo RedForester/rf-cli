@@ -2,12 +2,13 @@ package edit
 
 import (
 	"github.com/deissh/rf-cli/internal/config"
+	"github.com/deissh/rf-cli/pkg/factory"
 	"github.com/spf13/cobra"
 	"os"
 	"os/exec"
 )
 
-func NewCmdConfigEdit() *cobra.Command {
+func NewCmdConfigEdit(f *factory.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "edit",
 		Short: "Use $EDITOR open config file",

@@ -3,15 +3,19 @@ package init
 import (
 	"fmt"
 	"github.com/AlecAivazis/survey/v2"
+	"github.com/deissh/rf-cli/pkg/factory"
+	"github.com/deissh/rf-cli/pkg/utils"
 	"github.com/spf13/cobra"
 )
 
-func NewCmdExtInit() *cobra.Command {
+func NewCmdExtInit(f *factory.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "init",
 		Short: "Create new manifest",
 		Run:   run,
 	}
+
+	utils.DisableAuthCheck(cmd)
 
 	return cmd
 }

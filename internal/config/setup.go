@@ -37,6 +37,9 @@ func InitConfig() error {
 	viper.SetConfigType("toml")
 	viper.AddConfigPath(Path)
 	err = viper.ReadConfig(buf)
+	if err != nil {
+		fmt.Printf("init config err: %s\n", err)
+	}
 
 	return nil
 }
