@@ -1,14 +1,12 @@
 package list
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/deissh/rf-cli/internal/config"
 	"github.com/deissh/rf-cli/pkg/extension"
 	"github.com/deissh/rf-cli/pkg/factory"
+	"github.com/deissh/rf-cli/pkg/rf_api"
 	"github.com/spf13/cobra"
-	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 )
@@ -46,28 +44,21 @@ func run(f *factory.Factory, cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	resp, err := client.Get(cfg.Rf.BaseURL + "/api/extensions")
+	opt := rf_api.NewOptions(cfg.Rf.BaseURL)
+	api := rf_api.New(client, opt)
+
+	data, err := api.Ext.GetAll()
 	if err != nil {
-		fmt.Printf("rf err: %s \n", err)
+		fmt.Printf("internal error, err: %s \n", err)
 		os.Exit(1)
 	}
 
-	defer resp.Body.Close()
+	printExtensions(data)
+}
 
-	if resp.StatusCode == http.StatusOK {
-		bodyBytes, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		var data []extension.Extension
-		json.Unmarshal(bodyBytes, &data)
-
-		fmt.Println("ID                                     NAME")
-		for _, ext := range data {
-			fmt.Printf("%s   %s\n", ext.ID, ext.Name)
-		}
-	} else {
-		fmt.Println(resp.Status)
+func printExtensions(data *[]extension.Extension) {
+	fmt.Println("ID                                     NAME")
+	for _, ext := range *data {
+		fmt.Printf("%s   %s\n", ext.ID, ext.Name)
 	}
 }
