@@ -7,6 +7,7 @@ import (
 	"github.com/deissh/rf-cli/pkg/extension"
 	"github.com/deissh/rf-cli/pkg/factory"
 	"github.com/deissh/rf-cli/pkg/rf_api"
+	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 	"net/http"
 	"os"
@@ -17,7 +18,7 @@ type Options struct {
 	Config     func() (config.Config, error)
 
 	Limit  int
-	Owner  string
+	Owned  bool
 	Format string
 }
 
@@ -33,6 +34,7 @@ func NewCmdExtList(f *factory.Factory) *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&opt.Format, "format", "pretty", "output format (json, pretty-json, pretty)")
+	cmd.Flags().BoolVar(&opt.Owned, "owned", false, "filter output by author")
 
 	return cmd
 }
@@ -53,7 +55,14 @@ func run(f *factory.Factory, cmd *cobra.Command, args []string, opt Options) {
 	apiOpts := rf_api.NewOptions(cfg.Rf.BaseURL)
 	api := rf_api.New(client, apiOpts)
 
-	data, err := api.Ext.GetAll()
+	var data *[]extension.Extension
+
+	if opt.Owned {
+		data, err = api.Ext.GetOwned()
+	} else {
+		data, err = api.Ext.GetAll()
+	}
+
 	if err != nil {
 		fmt.Printf("internal error, err: %s \n", err)
 		os.Exit(1)
@@ -75,8 +84,28 @@ func run(f *factory.Factory, cmd *cobra.Command, args []string, opt Options) {
 }
 
 func prettyPrint(data *[]extension.Extension) {
-	fmt.Println("ID                                     NAME")
+	table := tablewriter.NewWriter(os.Stdout)
+
+	table.SetHeader([]string{"ID", "NAME", "AUTHOR", "BASE URL"})
 	for _, ext := range *data {
-		fmt.Printf("%s   %s\n", ext.ID, ext.Name)
+		table.Append([]string{
+			ext.ID,
+			ext.Name,
+			ext.Email,
+			ext.BaseURL,
+		})
 	}
+
+	table.SetAutoWrapText(false)
+	table.SetAutoFormatHeaders(true)
+	table.SetHeaderAlignment(3)
+	table.SetAlignment(3)
+	table.SetCenterSeparator("")
+	table.SetColumnSeparator("")
+	table.SetRowSeparator("")
+	table.SetHeaderLine(false)
+	table.SetBorder(false)
+	table.SetTablePadding("  ")
+	table.SetNoWhiteSpace(true)
+	table.Render()
 }
