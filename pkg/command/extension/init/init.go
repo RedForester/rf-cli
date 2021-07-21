@@ -1,6 +1,7 @@
 package init
 
 import (
+	"errors"
 	"fmt"
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/deissh/rf-cli/internal/config"
@@ -112,5 +113,74 @@ func interactiveExtInfo(cfg *config.Config) *extension.Extension {
 		return nil
 	}
 
+	showCommandList(extInfo)
+
 	return extInfo
+}
+
+const AddNewCommandSelect = "Add new command"
+const CloseNewCommandSelect = "Exit"
+
+func showCommandList(ext *extension.Extension) error {
+	//var command extension.Command
+
+	var options []string
+	for _, c := range ext.Commands {
+		options = append(options, c.Name)
+	}
+
+	options = append(options, AddNewCommandSelect, CloseNewCommandSelect)
+
+	var selected string
+	prompt := &survey.Select{
+		Message: "Extension commands",
+		Options: options,
+	}
+	err := survey.AskOne(prompt, &selected)
+	if err != nil {
+		return err
+	}
+
+	switch selected {
+	case AddNewCommandSelect:
+		ext.Commands = append(ext.Commands, *promptCommand())
+	case CloseNewCommandSelect:
+		return errors.New("closed")
+	default:
+		fmt.Println("print current command")
+	}
+
+	return showCommandList(ext)
+}
+
+func promptCommand() *extension.Command {
+	var cmd extension.Command
+
+	q := []*survey.Question{
+		{
+			Name: "name",
+			Prompt: &survey.Input{
+				Message: "Command name:",
+			},
+			Validate:  survey.Required,
+			Transform: survey.Title,
+		},
+		{
+			Name: "Description",
+			Prompt: &survey.Input{
+				Message: "Description:",
+			},
+		},
+	}
+
+	// todo: action
+	// todo: rules
+
+	err := survey.Ask(q, &cmd)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	return &cmd
 }
