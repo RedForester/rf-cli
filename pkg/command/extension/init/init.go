@@ -135,6 +135,7 @@ func showCommandList(ext *extension.Extension) error {
 	prompt := &survey.Select{
 		Message: "Extension commands",
 		Options: options,
+		Default: CloseNewCommandSelect,
 	}
 	err := survey.AskOne(prompt, &selected)
 	if err != nil {

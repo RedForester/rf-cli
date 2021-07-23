@@ -1,12 +1,12 @@
 package extension
 
 type Command struct {
-	Name        string
-	Description string
-	Group       *string
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Group       *string `json:"group"`
 
-	Type  CommandType
-	Rules []Rules
+	Type  CommandType `json:"type"`
+	Rules []Rules     `json:"showRules"`
 }
 
 // TODO
@@ -17,6 +17,8 @@ type CommandType struct {
 
 // TODO
 type Rules struct {
-	AllNodes bool
-	Root     bool
+	AllNodes         bool   `json:"allNodes,omitempty"`
+	DescendantOfType string `json:"descendantOfType,omitempty"`
+	SelfType         string `json:"selfType,omitempty"`
+	Root             bool   `json:"root,omitempty"`
 }

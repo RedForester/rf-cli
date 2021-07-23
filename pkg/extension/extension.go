@@ -1,22 +1,23 @@
 package extension
 
 type Extension struct {
-	ID          string
-	Name        string
-	Description string
-	Email       string
-	BaseURL     string
-	AvatarUrl   *string
+	ID          string  `json:"id"`
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Email       string  `json:"email"`
+	BaseURL     string  `json:"baseUrl"`
+	AvatarUrl   *string `json:"avatarUrl,omitempty"`
 
-	User     User
-	Commands []Command
+	User          User            `json:"user"`
+	Commands      []Command       `json:"commands"`
+	RequiredTypes []RequiredTypes `json:"requiredTypes"`
 }
 
 type User struct {
-	FirstName string
-	LastName  string
-	Username  string
-	AvatarUrl *string
+	FirstName string  `json:"firstName,omitempty"`
+	LastName  string  `json:"lastName,omitempty"`
+	Username  string  `json:"username"`
+	AvatarUrl *string `json:"avatarUrl,omitempty"`
 }
 
 func NewExtension() *Extension {

@@ -1,6 +1,7 @@
 package extension
 
 import (
+	"github.com/deissh/rf-cli/pkg/command/extension/info"
 	initCmd "github.com/deissh/rf-cli/pkg/command/extension/init"
 	"github.com/deissh/rf-cli/pkg/command/extension/list"
 	"github.com/deissh/rf-cli/pkg/factory"
@@ -16,6 +17,7 @@ func NewCmdExt(f *factory.Factory) *cobra.Command {
 
 	cmd.AddCommand(initCmd.NewCmdExtInit(f))
 	cmd.AddCommand(list.NewCmdExtList(f))
+	cmd.AddCommand(info.NewCmdExtInfo(f))
 
 	return cmd
 }
