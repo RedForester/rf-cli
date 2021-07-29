@@ -1,0 +1,56 @@
+id: NOT_CREATED
+name: New Extension
+description: '-'
+email: user@example.com
+baseUrl: https://example.com
+user:
+  firstName: ""
+  lastName: ""
+  username: ""
+  avatarUrl: null
+commands:
+- name: Test Command
+  description: ""
+  group: null
+  type:
+    action: ""
+    url: ""
+  showRules: []
+- name: Second Command
+  description: lorem ipsu
+  group: null
+  type:
+    action: ""
+    url: ""
+  showRules: []
+requiredTypes: []
+category: NUMBER
+        argument: NUMBER_REAL
+      - name: 'Time spent (log)'
+        category: TEXT
+        argument: TEXT_SIMPLE
+
+commands:
+  - name: Show timer
+    group: null
+    type:
+      action: show-timer
+      url: null
+    description: 'Open the timer of the current user in a new tab'
+    showRules:
+      - selfType: Task
+        allNodes: false
+        root: false
+  - name: Timer settings
+    group: null
+    type:
+      action: settings
+      url: null
+    description: Timer settings
+    showRules:
+      - selfType: Task
+        allNodes: false
+        root: false
+
+user:
+  username: test-ext
