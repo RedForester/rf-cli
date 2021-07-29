@@ -45,6 +45,14 @@ func run(f *factory.Factory, cmd *cobra.Command, args []string, opt Options) {
 		os.Exit(1)
 	}
 
+	file, err := os.OpenFile(opt.File, os.O_CREATE|os.O_RDWR, 0644)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	defer file.Close()
+
 	var ext *extension.Extension
 	if opt.Interactive {
 		ext = interactiveExtInfo(cfg)
@@ -58,13 +66,6 @@ func run(f *factory.Factory, cmd *cobra.Command, args []string, opt Options) {
 		os.Exit(1)
 	}
 
-	file, err := os.OpenFile(opt.File, os.O_CREATE|os.O_RDWR, 0644)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	defer file.Close()
 	file.Write(data)
 }
 
