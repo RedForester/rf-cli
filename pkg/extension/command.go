@@ -5,8 +5,8 @@ type Command struct {
 	Description string  `json:"description"`
 	Group       *string `json:"group"`
 
-	Type  CommandType `json:"type"`
-	Rules []Rules     `json:"showRules"`
+	Type      CommandType `json:"type"`
+	ShowRules []Rules     `json:"showRules" yaml:"showRules"`
 }
 
 // TODO
@@ -17,8 +17,8 @@ type CommandType struct {
 
 // TODO
 type Rules struct {
-	AllNodes         bool   `json:"allNodes,omitempty"`
-	DescendantOfType string `json:"descendantOfType,omitempty"`
-	SelfType         string `json:"selfType,omitempty"`
+	AllNodes         bool   `json:"allNodes,omitempty" yaml:"allNodes"`
+	DescendantOfType string `json:"descendantOfType,omitempty" yaml:"descendantOfType"`
+	SelfType         string `json:"selfType,omitempty" yaml:"selfType"`
 	Root             bool   `json:"root,omitempty"`
 }

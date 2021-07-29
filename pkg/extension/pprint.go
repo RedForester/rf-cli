@@ -18,8 +18,8 @@ func PrettyPrint(ext *Extension) {
 		fmt.Println("    Group:", command.Group)
 		fmt.Printf("    Type: %+v\n", command.Type)
 
-		fmt.Println("\n    Rules")
-		for j, rule := range command.Rules {
+		fmt.Println("\n    ShowRules")
+		for j, rule := range command.ShowRules {
 			fmt.Printf("     %d. %+v\n", j+1, rule)
 		}
 		fmt.Println()

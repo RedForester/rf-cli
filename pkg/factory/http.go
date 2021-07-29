@@ -15,6 +15,7 @@ func basicAuth(username, password string) string {
 func newHTTPClient(cfg *config.Config) (*http.Client, error) {
 	opts := []http_client.ClientOption{
 		http_client.AddHeader("Authorization", basicAuth(cfg.Client.Username, cfg.Client.PasswordHash)),
+		http_client.AddHeader("Content-Type", "application/json"),
 	}
 
 	return http_client.NewHTTPClient(opts...), nil
