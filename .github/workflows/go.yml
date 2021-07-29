@@ -1,0 +1,31 @@
+name: Go
+
+on:
+  push:
+  pull_request:
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Run golangci-lint
+      uses: golangci/golangci-lint-action@v2.5.2
+
+    - name: Build
+      run: go build -v ./...
+
+    - name: run tests
+      run: go test -json ./... > test-results.json
+
+    - name: Golang Test Annotations
+      uses: guyarb/golang-test-annotations@v0.4.0
+      with:
+        test-results: test-results.json
