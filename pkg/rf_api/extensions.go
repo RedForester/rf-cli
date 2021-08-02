@@ -6,7 +6,6 @@ import (
 	"errors"
 	"github.com/deissh/rf-cli/pkg/extension"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -23,12 +22,12 @@ func (e ExtensionsApi) GetAll() (*[]extension.Extension, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, err
+		return nil, errors.New(resp.Status)
 	}
 
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	data := &[]extension.Extension{}
@@ -49,12 +48,12 @@ func (e ExtensionsApi) GetOwned() (*[]extension.Extension, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, err
+		return nil, errors.New(resp.Status)
 	}
 
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	data := &[]extension.Extension{}
@@ -75,12 +74,12 @@ func (e ExtensionsApi) Get(id string) (*extension.Extension, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, err
+		return nil, errors.New(resp.Status)
 	}
 
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	data := &extension.Extension{}
