@@ -38,8 +38,9 @@ func New() *Config {
 		baseURL = "https://" + baseURL
 	}
 	if strings.HasSuffix(baseURL, "/") {
-		baseURL = baseURL[:len(baseURL)-1]
+		baseURL = strings.TrimSuffix(baseURL, "/")
 	}
+	c.Rf.BaseURL = baseURL
 
 	return &c
 }

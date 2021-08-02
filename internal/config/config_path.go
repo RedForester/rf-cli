@@ -32,11 +32,6 @@ func getDir() string {
 	return path
 }
 
-func dirExists(path string) bool {
-	f, err := os.Stat(path)
-	return err == nil && f.IsDir()
-}
-
 func fileExists(path string) bool {
 	f, err := os.Stat(path)
 	return err == nil && !f.IsDir()

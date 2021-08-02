@@ -66,7 +66,7 @@ func run(f *factory.Factory, cmd *cobra.Command, args []string, opt Options) {
 		os.Exit(1)
 	}
 
-	file.Write(data)
+	_, _ = file.Write(data)
 }
 
 func interactiveExtInfo(cfg *config.Config) *extension.Extension {
@@ -114,7 +114,11 @@ func interactiveExtInfo(cfg *config.Config) *extension.Extension {
 		return nil
 	}
 
-	showCommandList(extInfo)
+	err = showCommandList(extInfo)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
 
 	return extInfo
 }
