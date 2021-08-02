@@ -1,8 +1,11 @@
-package extension
+package manifest
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/deissh/rf-cli/pkg/extension"
+)
 
-func PrettyPrint(ext *Extension) {
+func PrettyPrint(ext *extension.Extension) {
 	fmt.Println("ID:", ext.ID)
 	fmt.Println("Name:", ext.Name)
 	fmt.Println("Description:", ext.Description)

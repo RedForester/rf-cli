@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"github.com/deissh/rf-cli/pkg/extension"
 	"github.com/deissh/rf-cli/pkg/factory"
+	"github.com/deissh/rf-cli/pkg/manifest"
 	"github.com/deissh/rf-cli/pkg/rf_api"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
-	"io/ioutil"
 	"os"
 )
 
@@ -38,7 +37,7 @@ func NewCmdExtUpdate(f *factory.Factory) *cobra.Command {
 }
 
 func run(f *factory.Factory, cmd *cobra.Command, args []string, opt Options) {
-	ext, err := readManifest(opt.File)
+	ext, err := manifest.ReadFromFile(opt.File)
 	if err != nil {
 		fmt.Printf("mainfest error: %s \n", err)
 		os.Exit(1)
@@ -65,27 +64,11 @@ func run(f *factory.Factory, cmd *cobra.Command, args []string, opt Options) {
 		str, _ := json.MarshalIndent(ext, "", " ")
 		fmt.Println(string(str))
 	case "pretty":
-		extension.PrettyPrint(ext)
+		manifest.PrettyPrint(ext)
 	default:
 		fmt.Println("format not found")
 		os.Exit(1)
 	}
-}
-
-func readManifest(file string) (*extension.Extension, error) {
-	var data extension.Extension
-
-	yamlFile, err := ioutil.ReadFile(file)
-	if err != nil {
-		return nil, err
-	}
-
-	err = yaml.Unmarshal(yamlFile, &data)
-	if err != nil {
-		return nil, err
-	}
-
-	return &data, err
 }
 
 func update(f *factory.Factory, ext *extension.Extension) error {
