@@ -37,10 +37,7 @@ func New() *Config {
 	if !strings.HasPrefix(baseURL, "http") {
 		baseURL = "https://" + baseURL
 	}
-	if strings.HasSuffix(baseURL, "/") {
-		baseURL = strings.TrimSuffix(baseURL, "/")
-	}
-	c.Rf.BaseURL = baseURL
+	c.Rf.BaseURL = strings.TrimSuffix(baseURL, "/")
 
 	return &c
 }

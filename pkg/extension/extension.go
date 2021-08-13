@@ -5,7 +5,7 @@ type Extension struct {
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	Email       string  `json:"email"`
-	BaseURL     string  `json:"baseUrl" yaml:"baseUrl"`
+	BaseURL     *string `json:"baseUrl,omitempty" yaml:"baseUrl,omitempty"`
 	AvatarUrl   *string `json:"avatarUrl,omitempty" yaml:"avatarUrl,omitempty"`
 
 	User          User            `json:"user"`

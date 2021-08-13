@@ -88,11 +88,16 @@ func prettyPrint(data *[]extension.Extension) {
 
 	table.SetHeader([]string{"ID", "NAME", "AUTHOR", "BASE URL"})
 	for _, ext := range *data {
+		baseUrl := "NOT SET"
+		if ext.BaseURL != nil {
+			baseUrl = *ext.BaseURL
+		}
+
 		table.Append([]string{
 			ext.ID,
 			ext.Name,
 			ext.Email,
-			ext.BaseURL,
+			baseUrl,
 		})
 	}
 
