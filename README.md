@@ -4,7 +4,7 @@
 
 ```bash
 $ export PATH=$GOPATH/bin:$PATH
-$ go get github.com/deissh/rf-cli/cmd/...
+$ go install github.com/deissh/rf-cli/cmd/rf@latest
 ```
 
 ```bash
