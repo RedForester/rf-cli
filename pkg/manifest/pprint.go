@@ -8,6 +8,7 @@ import (
 func PrettyPrint(ext *extension.Extension) {
 	fmt.Println("ID:", ext.ID)
 	fmt.Println("Name:", ext.Name)
+	fmt.Println("Short description:", ext.ShortDescription)
 	fmt.Println("Description:", ext.Description)
 	fmt.Println("Email:", ext.Email)
 	fmt.Println("BaseURL:", ext.BaseURL)

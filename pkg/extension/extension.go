@@ -3,7 +3,7 @@ package extension
 type Extension struct {
 	ID          string  `json:"id"`
 	Name        string  `json:"name"`
-	ShortDescription string  `json:"shortDescription"`
+	ShortDescription string  `json:"shortDescription" yaml:"shortDescription"`
 	Description string  `json:"description"`
 	Email       string  `json:"email"`
 	BaseURL     *string `json:"baseUrl,omitempty" yaml:"baseUrl,omitempty"`
