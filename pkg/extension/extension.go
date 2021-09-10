@@ -1,13 +1,13 @@
 package extension
 
 type Extension struct {
-	ID          string  `json:"id"`
-	Name        string  `json:"name"`
+	ID               string  `json:"id"`
+	Name             string  `json:"name"`
 	ShortDescription string  `json:"shortDescription" yaml:"shortDescription"`
-	Description string  `json:"description"`
-	Email       string  `json:"email"`
-	BaseURL     *string `json:"baseUrl,omitempty" yaml:"baseUrl,omitempty"`
-	AvatarUrl   *string `json:"avatarUrl,omitempty" yaml:"avatarUrl,omitempty"`
+	Description      string  `json:"description"`
+	Email            string  `json:"email"`
+	BaseURL          *string `json:"baseUrl,omitempty" yaml:"baseUrl,omitempty"`
+	AvatarUrl        *string `json:"avatarUrl,omitempty" yaml:"avatarUrl,omitempty"`
 
 	User          User            `json:"user"`
 	Commands      []Command       `json:"commands"`

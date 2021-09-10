@@ -51,44 +51,45 @@ func run(f *factory.Factory, cmd *cobra.Command, args []string, opt Options) {
 		os.Exit(1)
 	}
 
-	if err := update(f, ext); err != nil {
+	result, err := update(f, ext)
+	if err != nil {
 		fmt.Printf("api error: %s \n", err)
 		os.Exit(1)
 	}
 
 	switch opt.Format {
 	case "json":
-		str, _ := json.Marshal(ext)
+		str, _ := json.Marshal(result)
 		fmt.Println(string(str))
 	case "pretty-json":
-		str, _ := json.MarshalIndent(ext, "", " ")
+		str, _ := json.MarshalIndent(result, "", " ")
 		fmt.Println(string(str))
 	case "pretty":
-		manifest.PrettyPrint(ext)
+		manifest.PrettyPrint(result)
 	default:
 		fmt.Println("format not found")
 		os.Exit(1)
 	}
 }
 
-func update(f *factory.Factory, ext *extension.Extension) error {
+func update(f *factory.Factory, ext *extension.Extension) (*extension.Extension, error) {
 	cfg, err := f.Config()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	client, err := f.HttpClient()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	apiOpts := rf_api.NewOptions(cfg.Rf.BaseURL)
 	api := rf_api.New(client, apiOpts)
 
-	ext, err = api.Ext.Update(ext)
+	result, err := api.Ext.Update(ext)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

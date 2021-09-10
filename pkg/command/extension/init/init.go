@@ -57,7 +57,9 @@ func run(f *factory.Factory, cmd *cobra.Command, args []string, opt Options) {
 	if opt.Interactive {
 		ext = interactiveExtInfo(cfg)
 	} else {
-		// todo
+		fmt.Println("todo")
+		os.Exit(1)
+		return
 	}
 
 	data, err := yaml.Marshal(ext)
