@@ -2,25 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/deissh/rf-cli/pkg/command/root"
-	"github.com/deissh/rf-cli/pkg/factory"
+	"github.com/deissh/rf-cli/internal/cmd/root"
 	"os"
 )
 
 func main() {
-	os.Exit(Execute())
-}
-
-// Execute and return status code
-func Execute() int {
-	cmdFactory := factory.New()
-
-	rootCmd := root.NewCmdRoot(cmdFactory)
-
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		return 1
+	rootCmd := root.NewCmdRoot()
+	if _, err := rootCmd.ExecuteC(); err != nil {
+		fmt.Fprintf(os.Stderr, "%s\n", err)
+		os.Exit(1)
 	}
-
-	return 0
 }
