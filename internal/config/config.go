@@ -1,19 +1,35 @@
 package config
 
+import (
+	"github.com/spf13/viper"
+)
+
 type Config struct {
-	Rf     RfConfig     `mapstructure:"rf"`
-	Client ClientConfig `mapstructure:"client"`
+	Rf     RfConfig     `yaml:"rf"`
+	Client ClientConfig `yaml:"client"`
 }
 
 type RfConfig struct {
-	BaseURL string `mapstructure:"base_url"`
+	BaseURL string `yaml:"base_url"`
 }
 
 type ClientConfig struct {
-	Username     string `mapstructure:"username"`
-	PasswordHash string `mapstructure:"password_hash"`
+	Username     string `yaml:"username"`
+	PasswordHash string `yaml:"password_hash"`
 }
 
 func New() *Config {
-	return &Config{}
+	return &Config{
+		Rf: RfConfig{BaseURL: "asd"},
+	}
+}
+
+func (c *Config) write() error {
+	viper.SetConfigName(FileName)
+	viper.SetConfigType(FileExt)
+	viper.SetConfigFile(GetConfigFile())
+
+	viper.Set(".", c)
+
+	return viper.WriteConfig()
 }

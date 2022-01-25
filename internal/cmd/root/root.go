@@ -6,13 +6,38 @@ import (
 	"github.com/deissh/rf-cli/internal/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"os"
 )
 
 var (
 	configPath string
 	debug      bool
 )
+
+func init() {
+	cobra.OnInitialize(func() {
+		if configPath != "" {
+			viper.SetConfigFile(configPath)
+		} else {
+			path := config.GetConfigFile()
+			if config.FileExists(path) != true {
+				fmt.Println("Missing configuration file.")
+				fmt.Println("Run 'rf init' to configure the tool.")
+				fmt.Println()
+			}
+
+			viper.SetConfigFile(path)
+			viper.SetConfigName(config.FileName)
+			viper.SetConfigType(config.FileExt)
+		}
+
+		viper.AutomaticEnv()
+		viper.SetEnvPrefix("rf")
+
+		if err := viper.ReadInConfig(); err == nil && debug {
+			fmt.Printf("Using config file: %s\n", viper.ConfigFileUsed())
+		}
+	})
+}
 
 func NewCmdRoot() *cobra.Command {
 	cmd := &cobra.Command{
@@ -27,30 +52,13 @@ func NewCmdRoot() *cobra.Command {
 				return
 			}
 
-			if configPath != "" {
-				viper.SetConfigFile(configPath)
-			} else {
-				home, err := config.GetConfigHome()
-				if err != nil {
-					fmt.Println("Missing configuration file.")
-					fmt.Println("Run 'rf init' to configure the tool.")
-					os.Exit(1)
-					return
-				}
-
-				viper.AddConfigPath(fmt.Sprintf("%s/%s", home, config.Dir))
-				viper.SetConfigName(config.FileName)
-			}
-
-			viper.AutomaticEnv()
-			viper.SetEnvPrefix("rf")
-
-			if err := viper.ReadInConfig(); err == nil && debug {
-				fmt.Printf("Using config file: %s\n", viper.ConfigFileUsed())
-			}
 		},
 	}
 
+	cmd.PersistentFlags().StringVarP(
+		&configPath, "config", "c", "",
+		fmt.Sprintf("Config file (default is %s/%s.%s)", config.GetConfigHome(), config.FileName, config.FileExt),
+	)
 	cmd.PersistentFlags().BoolVar(&debug, "debug", false, "Turn on debug output")
 
 	addChildCommands(cmd)

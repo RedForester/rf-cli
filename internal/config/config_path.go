@@ -1,7 +1,7 @@
 package config
 
 import (
-	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -12,30 +12,29 @@ const (
 	XdgConfigHome = "XDG_CONFIG_HOME"
 	AppData       = "AppData"
 
-	Dir         = ".config"
-	FileName    = "rf"
-	FileNameWin = "RF CLI"
-	FileExt     = "yml"
+	Dir      = ".config"
+	FileName = "rf"
+	FileExt  = "yml"
 )
 
-func GetConfigHome() (string, error) {
+func GetConfigFile() string {
+	return fmt.Sprintf("%s/%s.%s", GetConfigHome(), FileName, FileExt)
+}
+
+func GetConfigHome() string {
 	var path string
 	if a := os.Getenv(RfConfigDir); a != "" {
 		path = a
 	} else if b := os.Getenv(XdgConfigHome); b != "" {
-		path = filepath.Join(b, FileName)
+		path = b
 	} else if c := os.Getenv(AppData); runtime.GOOS == "windows" && c != "" {
-		path = filepath.Join(c, FileNameWin)
+		path = c
 	} else {
 		d, _ := os.UserHomeDir()
-		path = filepath.Join(d, Dir, FileName)
+		path = filepath.Join(d, Dir)
 	}
 
-	if FileExists(path) != true {
-		return "", errors.New("config not exist")
-	}
-
-	return path, nil
+	return path
 }
 
 func FileExists(path string) bool {
