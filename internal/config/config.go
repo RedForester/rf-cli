@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"github.com/spf13/viper"
 )
 
@@ -19,17 +20,18 @@ type ClientConfig struct {
 }
 
 func New() *Config {
-	return &Config{
-		Rf: RfConfig{BaseURL: "asd"},
+	config := Config{
+		Rf: RfConfig{
+			BaseURL: "https://beta.app.redforester.com",
+		},
 	}
+
+	if err := viper.UnmarshalKey("config", &config); err != nil {
+		fmt.Println("WARN: unmarshall config error")
+	}
+	return &config
 }
 
 func (c *Config) write() error {
-	viper.SetConfigName(FileName)
-	viper.SetConfigType(FileExt)
-	viper.SetConfigFile(GetConfigFile())
-
-	viper.Set(".", c)
-
 	return viper.WriteConfig()
 }

@@ -11,7 +11,7 @@ import (
 
 var example = `
 $ rf config edit
-$ rf ext init
+$ rf extension init
 `
 
 func NewCmdRoot(f *factory.Factory) *cobra.Command {

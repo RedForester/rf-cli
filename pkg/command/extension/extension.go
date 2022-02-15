@@ -12,8 +12,8 @@ import (
 func NewCmdExt(f *factory.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "extension <command>",
-		Short:   "Manage extensions",
-		Aliases: []string{"ext"},
+		Short:   "Manage extension",
+		Aliases: []string{"extension"},
 	}
 
 	cmd.AddCommand(initCmd.NewCmdExtInit(f))

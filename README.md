@@ -19,12 +19,12 @@ $ rf config edit
 ## Usage
 ### Extension
 ```bash
-$ rf ext --help
+$ rf extension --help
 ```
 #### List public extensions
 
 ```bash
-$ rf ext list
+$ rf extension list
 ID                                    NAME                     AUTHOR                           BASE URL
 fed325b0-c3e0-4f9f-8c3b-7f958f8a28a5  Timeline                 tech@redforester.com             https://rf-b2b-timeline-frontend.extensions.redforester.com
 9e07269a-8e9b-4114-a4d7-1940a67d120c  Exporter                 tech@redforester.com             https://satek-exporter.extensions.redforester.com
@@ -37,13 +37,13 @@ c8d4068e-7ac6-4f4a-b787-8a3db50e590c  Time Tracker             tech@redforester.
 #### View extension info
 
 ```bash
-$ rf ext info 12345678-7ac6-4f4a-b787-8a3db50e590c
+$ rf extension info 12345678-7ac6-4f4a-b787-8a3db50e590c
 ID: 12345678-7ac6-4f4a-b787-8a3db50e590c
 Name: Example extension
 Description: some description
 ...
 
-$ rf ext info -f manifest.yaml
+$ rf extension info -f manifest.yaml
 Name: Example manifest
 Description: lorem ipsu
 ...
@@ -52,14 +52,14 @@ Description: lorem ipsu
 #### Update extension info
 
 ```bash
-$ rf ext update -f manifest.yaml
+$ rf extension update -f manifest.yaml
 ID: 12345678-7ac6-4f4a-b787-8a3db50e590c
 Name: Example extension
 Description: some description
 ...
 
-# override ext id from manifest.yaml
-$ rf ext update
+# override extension id from manifest.yaml
+$ rf extension update
 ID: 0000000-1234-4f4a-b787-8a3db50e590c
 Name: Example extension
 Description: some description
@@ -69,7 +69,7 @@ Description: some description
 #### Init extension manifest
 
 ```bash
-$ rf ext init
+$ rf extension init
 
 ? Extensions name: New extension
 ? Description: -

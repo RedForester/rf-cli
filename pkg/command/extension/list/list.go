@@ -27,14 +27,14 @@ func NewCmdExtList(f *factory.Factory) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "list [--format=json]",
-		Short: "Return all registered extensions",
+		Short: "Return all registered extension",
 		Run: func(cmd *cobra.Command, args []string) {
 			run(f, cmd, args, opt)
 		},
 	}
 
 	cmd.Flags().StringVar(&opt.Format, "format", "pretty", "output format (json, pretty-json, pretty)")
-	cmd.Flags().BoolVar(&opt.Owned, "owned", false, "show only current user extensions")
+	cmd.Flags().BoolVar(&opt.Owned, "owned", false, "show only current user extension")
 
 	return cmd
 }

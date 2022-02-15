@@ -9,16 +9,20 @@ import (
 )
 
 func NewCmdInit() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:     "init",
 		Short:   "Init initializes config",
 		Long:    "Init initializes configuration required for the tool to work properly.",
 		Aliases: []string{"initialize", "configure", "config", "setup"},
 		Run:     run,
 	}
+	cmd.Flags().StringP("username", "u", "", "RedForester user name")
+	cmd.Flags().StringP("password", "p", "", "RedForester password")
+
+	return cmd
 }
 
-func run(*cobra.Command, []string) {
+func run(command *cobra.Command, args []string) {
 	c := config.New()
 
 	if err := c.Generate(); err != nil {

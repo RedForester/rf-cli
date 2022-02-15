@@ -14,7 +14,7 @@ type ExtensionsApi struct {
 }
 
 func (e ExtensionsApi) GetAll() (*[]extension.Extension, error) {
-	resp, err := e.Client.Get(e.Options.BaseURL + "/api/extensions")
+	resp, err := e.Client.Get(e.Options.BaseURL + "/api/extension")
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (e ExtensionsApi) GetAll() (*[]extension.Extension, error) {
 }
 
 func (e ExtensionsApi) GetOwned() (*[]extension.Extension, error) {
-	resp, err := e.Client.Get(e.Options.BaseURL + "/api/extensions/owned")
+	resp, err := e.Client.Get(e.Options.BaseURL + "/api/extension/owned")
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (e ExtensionsApi) GetOwned() (*[]extension.Extension, error) {
 }
 
 func (e ExtensionsApi) Get(id string) (*extension.Extension, error) {
-	resp, err := e.Client.Get(e.Options.BaseURL + "/api/extensions/" + id)
+	resp, err := e.Client.Get(e.Options.BaseURL + "/api/extension/" + id)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func (e ExtensionsApi) Update(ext *extension.Extension) (*extension.Extension, e
 		return nil, err
 	}
 
-	req, _ := http.NewRequest("PATCH", e.Options.BaseURL+"/api/extensions/"+ext.ID, &payloadBuf)
+	req, _ := http.NewRequest("PATCH", e.Options.BaseURL+"/api/extension/"+ext.ID, &payloadBuf)
 	resp, err := e.Client.Do(req)
 	if err != nil {
 		return nil, err

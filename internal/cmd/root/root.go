@@ -2,6 +2,7 @@ package root
 
 import (
 	"fmt"
+	extensionCmd "github.com/deissh/rf-cli/internal/cmd/extension"
 	initCmd "github.com/deissh/rf-cli/internal/cmd/init"
 	"github.com/deissh/rf-cli/internal/config"
 	"github.com/spf13/cobra"
@@ -15,25 +16,27 @@ var (
 
 func init() {
 	cobra.OnInitialize(func() {
-		if configPath != "" {
-			viper.SetConfigFile(configPath)
-		} else {
-			path := config.GetConfigFile()
-			if config.FileExists(path) != true {
-				fmt.Println("Missing configuration file.")
-				fmt.Println("Run 'rf init' to configure the tool.")
-				fmt.Println()
-			}
+		path := config.GetConfigFile()
 
-			viper.SetConfigFile(path)
-			viper.SetConfigName(config.FileName)
-			viper.SetConfigType(config.FileExt)
+		if configPath != "" {
+			path = configPath
 		}
 
-		viper.AutomaticEnv()
-		viper.SetEnvPrefix("rf")
+		if config.FileExists(path) != true {
+			fmt.Println("Missing configuration file.")
+			fmt.Println("Run 'rf init' to configure the tool.")
+			fmt.Println()
+		}
 
-		if err := viper.ReadInConfig(); err == nil && debug {
+		viper.SetConfigFile(path)
+
+		viper.AutomaticEnv()
+		viper.SetEnvPrefix("RF")
+
+		if err := viper.ReadInConfig(); err != nil && debug {
+			fmt.Printf("Config not loaded: %s\n", err)
+		}
+		if debug {
 			fmt.Printf("Using config file: %s\n", viper.ConfigFileUsed())
 		}
 	})
@@ -69,6 +72,7 @@ func NewCmdRoot() *cobra.Command {
 func addChildCommands(cmd *cobra.Command) {
 	cmd.AddCommand(
 		initCmd.NewCmdInit(),
+		extensionCmd.NewCmdExtension(),
 	)
 }
 
@@ -76,7 +80,6 @@ func cmdRequireToken(cmd string) bool {
 	allowList := []string{
 		"init",
 		"help",
-		"jira",
 		"version",
 		"completion",
 		"man",
