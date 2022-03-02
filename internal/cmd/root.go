@@ -26,7 +26,7 @@ func init() {
 			path = configPath
 		}
 
-		if config.FileExists(path) != true {
+		if !config.FileExists(path) {
 			fmt.Println("Missing configuration file.")
 			fmt.Println("Run 'rf init' to configure the tool.")
 			fmt.Println()
@@ -52,12 +52,6 @@ func NewCmdRoot() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return cmd.Help()
 		},
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			//subCmd := cmd.Name()
-			//if !cmdRequireToken(subCmd) {
-			//	return
-			//}
-		},
 	}
 
 	cmd.PersistentFlags().StringVarP(
@@ -76,22 +70,4 @@ func addChildCommands(cmd *cobra.Command) {
 		initCmd.NewCmdInit(),
 		extensionCmd.NewCmdExtension(),
 	)
-}
-
-func cmdRequireToken(cmd string) bool {
-	allowList := []string{
-		"init",
-		"help",
-		"version",
-		"completion",
-		"man",
-	}
-
-	for _, item := range allowList {
-		if item == cmd {
-			return false
-		}
-	}
-
-	return true
 }
