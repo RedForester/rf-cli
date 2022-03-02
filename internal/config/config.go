@@ -32,7 +32,7 @@ func New() *config {
 }
 
 func Load(configPath string) error {
-	if FileExists(configPath) != true {
+	if !FileExists(configPath) {
 		fmt.Println("config file not exist, please sign in first")
 	}
 
