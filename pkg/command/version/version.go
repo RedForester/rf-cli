@@ -3,7 +3,7 @@ package version
 import (
 	"fmt"
 	"github.com/deissh/rf-cli/internal/build"
-	"github.com/deissh/rf-cli/pkg/factory"
+	"github.com/deissh/rf-cli/internal/factory"
 	"github.com/spf13/cobra"
 )
 

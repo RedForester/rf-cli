@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"github.com/deissh/rf-cli/pkg/extension"
+	"github.com/deissh/rf-cli/pkg/rf/extension"
 	"io/ioutil"
 	"net/http"
 )
@@ -14,7 +14,7 @@ type ExtensionsApi struct {
 }
 
 func (e ExtensionsApi) GetAll() (*[]extension.Extension, error) {
-	resp, err := e.Client.Get(e.Options.BaseURL + "/api/extension")
+	resp, err := e.Client.Get(e.Options.BaseURL + "/api/extensions")
 	if err != nil {
 		return nil, err
 	}
@@ -82,13 +82,12 @@ func (e ExtensionsApi) Get(id string) (*extension.Extension, error) {
 		return nil, err
 	}
 
-	data := &extension.Extension{}
-	err = json.Unmarshal(bodyBytes, data)
+	data, err := extension.UnmarshalExtension(bodyBytes)
 	if err != nil {
 		return nil, err
 	}
 
-	return data, nil
+	return &data, nil
 }
 
 func (e ExtensionsApi) Update(ext *extension.Extension) (*extension.Extension, error) {
@@ -116,11 +115,10 @@ func (e ExtensionsApi) Update(ext *extension.Extension) (*extension.Extension, e
 		return nil, err
 	}
 
-	data := &extension.Extension{}
-	err = json.Unmarshal(bodyBytes, data)
+	data, err := extension.UnmarshalExtension(bodyBytes)
 	if err != nil {
 		return nil, err
 	}
 
-	return data, nil
+	return &data, nil
 }

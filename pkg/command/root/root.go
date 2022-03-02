@@ -1,10 +1,10 @@
 package root
 
 import (
+	"github.com/deissh/rf-cli/internal/factory"
 	"github.com/deissh/rf-cli/pkg/command/config"
 	"github.com/deissh/rf-cli/pkg/command/extension"
 	"github.com/deissh/rf-cli/pkg/command/version"
-	"github.com/deissh/rf-cli/pkg/factory"
 	"github.com/deissh/rf-cli/pkg/utils"
 	"github.com/spf13/cobra"
 )

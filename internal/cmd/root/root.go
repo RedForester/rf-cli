@@ -6,7 +6,6 @@ import (
 	initCmd "github.com/deissh/rf-cli/internal/cmd/init"
 	"github.com/deissh/rf-cli/internal/config"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var (
@@ -26,18 +25,16 @@ func init() {
 			fmt.Println("Missing configuration file.")
 			fmt.Println("Run 'rf init' to configure the tool.")
 			fmt.Println()
+			return
 		}
 
-		viper.SetConfigFile(path)
-
-		viper.AutomaticEnv()
-		viper.SetEnvPrefix("RF")
-
-		if err := viper.ReadInConfig(); err != nil && debug {
-			fmt.Printf("Config not loaded: %s\n", err)
+		if err := config.Load(path); err != nil {
+			fmt.Printf("Config not loaded, %e\n", err)
+			return
 		}
+
 		if debug {
-			fmt.Printf("Using config file: %s\n", viper.ConfigFileUsed())
+			fmt.Printf("Using config file: %s\n", config.GetConfigFile())
 		}
 	})
 }
@@ -54,13 +51,12 @@ func NewCmdRoot() *cobra.Command {
 			if !cmdRequireToken(subCmd) {
 				return
 			}
-
 		},
 	}
 
 	cmd.PersistentFlags().StringVarP(
-		&configPath, "config", "c", "",
-		fmt.Sprintf("Config file (default is %s/%s.%s)", config.GetConfigHome(), config.FileName, config.FileExt),
+		&configPath, "config", "c", config.GetConfigFile(),
+		"Config file",
 	)
 	cmd.PersistentFlags().BoolVar(&debug, "debug", false, "Turn on debug output")
 

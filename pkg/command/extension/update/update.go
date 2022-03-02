@@ -3,8 +3,8 @@ package update
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/deissh/rf-cli/internal/factory"
 	"github.com/deissh/rf-cli/pkg/extension"
-	"github.com/deissh/rf-cli/pkg/factory"
 	"github.com/deissh/rf-cli/pkg/manifest"
 	"github.com/deissh/rf-cli/pkg/rf_api"
 	"github.com/spf13/cobra"

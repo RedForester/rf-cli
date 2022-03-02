@@ -4,9 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/deissh/rf-cli/internal/config"
+	"github.com/deissh/rf-cli/internal/factory"
 	"github.com/deissh/rf-cli/pkg/extension"
-	"github.com/deissh/rf-cli/pkg/factory"
 	"github.com/deissh/rf-cli/pkg/utils"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
@@ -71,7 +70,7 @@ func run(f *factory.Factory, cmd *cobra.Command, args []string, opt Options) {
 	_, _ = file.Write(data)
 }
 
-func interactiveExtInfo(cfg *config.Config) *extension.Extension {
+func interactiveExtInfo() *extension.Extension {
 	extInfo := &extension.Extension{
 		ID:    "NOT_CREATED",
 		Email: cfg.Client.Username,

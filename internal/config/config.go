@@ -2,36 +2,70 @@ package config
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
+	"gopkg.in/yaml.v3"
+	"os"
 )
 
-type Config struct {
-	Rf     RfConfig     `yaml:"rf"`
-	Client ClientConfig `yaml:"client"`
+var Config = New()
+
+type config struct {
+	Rf     rfConfig     `yaml:"rf"`
+	Client clientConfig `yaml:"client"`
 }
 
-type RfConfig struct {
+type rfConfig struct {
 	BaseURL string `yaml:"base_url"`
 }
 
-type ClientConfig struct {
+type clientConfig struct {
 	Username     string `yaml:"username"`
 	PasswordHash string `yaml:"password_hash"`
 }
 
-func New() *Config {
-	config := Config{
-		Rf: RfConfig{
+// New create config with default value
+func New() *config {
+	return &config{
+		Rf: rfConfig{
 			BaseURL: "https://beta.app.redforester.com",
 		},
 	}
-
-	if err := viper.UnmarshalKey("config", &config); err != nil {
-		fmt.Println("WARN: unmarshall config error")
-	}
-	return &config
 }
 
-func (c *Config) write() error {
-	return viper.WriteConfig()
+func Load(configPath string) error {
+	if FileExists(configPath) != true {
+		fmt.Println("config file not exist, please sign in first")
+	}
+
+	file, err := os.Open(configPath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	d := yaml.NewDecoder(file)
+	if err := d.Decode(&Config); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func Write(path string) error {
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	out, err := yaml.Marshal(Config)
+	if err != nil {
+		return err
+	}
+
+	_, err = file.Write(out)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

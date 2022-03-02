@@ -1,36 +1,35 @@
 package config
 
 import (
-	"fmt"
 	"github.com/deissh/rf-cli/internal/utils"
-	"github.com/spf13/viper"
 	"os"
 )
 
-func (c Config) Generate() error {
+func Generate() error {
+	path := GetConfigFile()
+
 	func() bool {
 		s := utils.PrintSpinner("Checking configuration...")
 		defer s.Stop()
 
-		return FileExists(viper.ConfigFileUsed())
+		return FileExists(GetConfigFile())
 	}()
 
 	if err := func() error {
 		s := utils.PrintSpinner("Creating new configuration...")
 		defer s.Stop()
 
-		home := GetConfigHome()
-
-		return create(home, fmt.Sprintf("%s.%s", FileName, FileExt))
+		return create()
 	}(); err != nil {
 		return err
 	}
 
-	return c.write()
+	return Write(path)
 }
 
-func create(path, name string) error {
+func create() error {
 	const perm = 0o700
+	path := GetConfigHome()
 
 	if _, err := os.Stat(path); err != nil {
 		if err := os.MkdirAll(path, perm); err != nil {
@@ -38,13 +37,13 @@ func create(path, name string) error {
 		}
 	}
 
-	file := fmt.Sprintf("%s/%s", path, name)
+	file := GetConfigFile()
 	if FileExists(file) {
 		if err := os.Rename(file, file+".bkp"); err != nil {
 			return err
 		}
 	}
-	_, err := os.Create(file)
+	_, err := os.OpenFile(file, os.O_CREATE, perm)
 
 	return err
 }
