@@ -1,7 +1,8 @@
-package root
+package cmd
 
 import (
 	"fmt"
+	"github.com/deissh/rf-cli/internal/build"
 	extensionCmd "github.com/deissh/rf-cli/internal/cmd/extension"
 	initCmd "github.com/deissh/rf-cli/internal/cmd/init"
 	"github.com/deissh/rf-cli/internal/config"
@@ -15,6 +16,10 @@ var (
 
 func init() {
 	cobra.OnInitialize(func() {
+		if debug {
+			fmt.Printf("RF CLI version %s (%s)\n", build.Version, build.Date)
+		}
+
 		path := config.GetConfigFile()
 
 		if configPath != "" {
@@ -41,8 +46,9 @@ func init() {
 
 func NewCmdRoot() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "rf <command> <subcommand> [flags]",
-		Short: "CLI include some shortcuts for RedForester",
+		Use:     "rf <command> <subcommand> [flags]",
+		Short:   "CLI include some shortcuts for RedForester",
+		Version: build.Version,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return cmd.Help()
 		},

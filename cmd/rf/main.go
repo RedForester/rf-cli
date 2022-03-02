@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/deissh/rf-cli/internal/cmd/root"
+	"github.com/deissh/rf-cli/internal/cmd"
 	"os"
 )
 
 func main() {
-	rootCmd := root.NewCmdRoot()
+	rootCmd := cmd.NewCmdRoot()
 	if _, err := rootCmd.ExecuteC(); err != nil {
-		fmt.Fprintf(os.Stderr, "%s\n", err)
+		_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(1)
 	}
 }

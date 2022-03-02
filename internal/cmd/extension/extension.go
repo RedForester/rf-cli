@@ -6,19 +6,21 @@ import (
 	"github.com/deissh/rf-cli/internal/factory"
 	"github.com/deissh/rf-cli/internal/utils"
 	"github.com/deissh/rf-cli/pkg/rf/extension"
+	"github.com/deissh/rf-cli/pkg/view"
 	"github.com/spf13/cobra"
-	"os"
-	"strings"
-	"text/tabwriter"
 )
 
 func NewCmdExtension() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:     "extension",
 		Short:   "Manage extension",
 		Aliases: []string{"ext", "e"},
 		Run:     run,
 	}
+
+	cmd.Flags().StringP("format", "f", "pretty", "output format (json, pretty-json, yaml, pretty)")
+
+	return cmd
 }
 
 func run(cmd *cobra.Command, _ []string) {
@@ -32,21 +34,26 @@ func run(cmd *cobra.Command, _ []string) {
 	}()
 	utils.ExitIfError(err)
 
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 1, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tEMAIL\tBASE URL")
-	for _, extension := range *data {
-		baseUrl := ""
-		if extension.BaseURL != nil {
-			baseUrl = *extension.BaseURL
-		}
-		line := []string{
-			extension.ID,
-			extension.Name,
-			extension.Email,
-			baseUrl,
-		}
-		fmt.Fprintln(w, strings.Join(line, "\t"))
-	}
+	r := view.NewExtensionList(data)
 
-	w.Flush()
+	format, _ := cmd.Flags().GetString("format")
+	switch format {
+	case "json":
+		err = r.RenderJSON()
+		utils.ExitIfError(err)
+		return
+	case "pretty-json":
+		err = r.RenderPrettyJSON()
+		utils.ExitIfError(err)
+		return
+	case "yaml":
+		err = r.RenderYAML()
+		utils.ExitIfError(err)
+		return
+	case "pretty":
+		err = r.Render()
+		utils.ExitIfError(err)
+	default:
+		fmt.Println("Invalid output format")
+	}
 }
