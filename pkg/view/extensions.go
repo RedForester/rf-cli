@@ -3,7 +3,7 @@ package view
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/deissh/rf-cli/pkg/rf/extension"
+	"github.com/deissh/rf-cli/pkg/rf"
 	"gopkg.in/yaml.v3"
 	"io"
 	"os"
@@ -12,11 +12,11 @@ import (
 )
 
 type ExtensionList struct {
-	data   *[]extension.Extension
+	data   *[]rf.Extension
 	writer io.Writer
 }
 
-func NewExtensionList(data *[]extension.Extension) *ExtensionList {
+func NewExtensionList(data *[]rf.Extension) *ExtensionList {
 	return &ExtensionList{
 		data:   data,
 		writer: os.Stdout,

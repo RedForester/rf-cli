@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 	"github.com/deissh/rf-cli/internal/build"
+	configCmd "github.com/deissh/rf-cli/internal/cmd/config"
 	extensionCmd "github.com/deissh/rf-cli/internal/cmd/extension"
-	initCmd "github.com/deissh/rf-cli/internal/cmd/init"
 	"github.com/deissh/rf-cli/internal/config"
 	"github.com/spf13/cobra"
 )
@@ -28,7 +28,7 @@ func init() {
 
 		if !config.FileExists(path) {
 			fmt.Println("Missing configuration file.")
-			fmt.Println("Run 'rf init' to configure the tool.")
+			fmt.Println("Run 'rf config' to configure the tool.")
 			fmt.Println()
 			return
 		}
@@ -67,7 +67,7 @@ func NewCmdRoot() *cobra.Command {
 
 func addChildCommands(cmd *cobra.Command) {
 	cmd.AddCommand(
-		initCmd.NewCmdInit(),
+		configCmd.NewCmdConfig(),
 		extensionCmd.NewCmdExtension(),
 	)
 }

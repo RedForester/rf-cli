@@ -8,8 +8,8 @@ func UnmarshalNode(data []byte) (Node, error) {
 	return r, err
 }
 
-func (r *Node) Marshal() ([]byte, error) {
-	return json.Marshal(r)
+func (n *Node) Marshal() ([]byte, error) {
+	return json.Marshal(n)
 }
 
 type Node struct {
@@ -29,6 +29,10 @@ type Node struct {
 	Meta                Meta           `json:"meta"`
 }
 
+func (n Node) IsLink() bool {
+	return n.ID != n.Body.ID
+}
+
 type Body struct {
 	ID                  string         `json:"id"`
 	MapID               string         `json:"map_id"`
@@ -37,7 +41,7 @@ type Body struct {
 	Parent              string         `json:"parent"`
 	UnreadCommentsCount int64          `json:"unread_comments_count"`
 	CommentsCount       int64          `json:"comments_count"`
-	Children            []interface{}  `json:"children"`
+	Children            []Node         `json:"children"`
 	Access              string         `json:"access"`
 	Readers             []string       `json:"readers"`
 	Meta                Meta           `json:"meta"`

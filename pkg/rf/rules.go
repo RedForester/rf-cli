@@ -1,4 +1,4 @@
-package extension
+package rf
 
 type ShowRule struct {
 	SelfType         *string `json:"selfType,omitempty"`
