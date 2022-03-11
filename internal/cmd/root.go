@@ -6,6 +6,7 @@ import (
 	configCmd "github.com/deissh/rf-cli/internal/cmd/config"
 	extensionCmd "github.com/deissh/rf-cli/internal/cmd/extension"
 	"github.com/deissh/rf-cli/internal/config"
+	"github.com/deissh/rf-cli/internal/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -26,7 +27,7 @@ func init() {
 			path = configPath
 		}
 
-		if !config.FileExists(path) {
+		if !utils.FileExists(path) {
 			fmt.Println("Missing configuration file.")
 			fmt.Println("Run 'rf config' to configure the tool.")
 			fmt.Println()

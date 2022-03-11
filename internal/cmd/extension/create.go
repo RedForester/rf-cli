@@ -8,14 +8,13 @@ import (
 	"github.com/deissh/rf-cli/pkg/manifest"
 	"github.com/deissh/rf-cli/pkg/view"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v3"
 	"os"
 )
 
 func NewCmdCreate() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "create",
-		Short:   "Create new extension and save manifest.yaml",
+		Short:   "Create new extension manifest.yaml",
 		Aliases: []string{"c"},
 		Run:     runCmdCreate,
 	}
@@ -26,9 +25,10 @@ func NewCmdCreate() *cobra.Command {
 	return cmd
 }
 
-func runCmdCreate(cmd *cobra.Command, args []string) {
+func runCmdCreate(cmd *cobra.Command, _ []string) {
 	forceYes, err := cmd.Flags().GetBool("yes")
 
+	fmt.Print("Press ^C at any time to quit.\n\n")
 	info, err := askBaseExtInfo()
 	utils.ExitIfError(err)
 
@@ -57,15 +57,7 @@ func createManifest(path string, info *manifest.Manifest) error {
 	}
 	defer f.Close()
 
-	data, err := yaml.Marshal(info)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	_, err = f.Write(data)
-
-	return err
+	return manifest.Write(f, info)
 }
 
 func askBaseExtInfo() (*manifest.Manifest, error) {

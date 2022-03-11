@@ -12,7 +12,7 @@ func Generate() error {
 		s := utils.PrintSpinner("Checking configuration...")
 		defer s.Stop()
 
-		return FileExists(GetConfigFile())
+		return utils.FileExists(GetConfigFile())
 	}()
 
 	if err := func() error {
@@ -38,7 +38,7 @@ func create() error {
 	}
 
 	file := GetConfigFile()
-	if FileExists(file) {
+	if utils.FileExists(file) {
 		if err := os.Rename(file, file+".bkp"); err != nil {
 			return err
 		}
