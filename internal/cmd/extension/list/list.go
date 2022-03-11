@@ -1,6 +1,7 @@
-package extension
+package list
 
 import (
+	"errors"
 	"fmt"
 	"github.com/deissh/rf-cli/internal/config"
 	"github.com/deissh/rf-cli/internal/factory"
@@ -8,9 +9,10 @@ import (
 	"github.com/deissh/rf-cli/pkg/rf"
 	"github.com/deissh/rf-cli/pkg/view"
 	"github.com/spf13/cobra"
+	"os"
 )
 
-func NewCmdList() *cobra.Command {
+func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "list",
 		Short:   "Show all available extension",
@@ -34,26 +36,33 @@ func run(cmd *cobra.Command, _ []string) {
 	}()
 	utils.ExitIfError(err)
 
-	r := view.NewExtensionList(data)
+	if len(*data) == 0 {
+		fmt.Println()
+		utils.Exit("No result found")
+		return
+	}
 
 	format, _ := cmd.Flags().GetString("format")
+
+	err = render(format, view.ExtensionList{
+		Data:   data,
+		Writer: os.Stdout,
+	})
+
+	utils.ExitIfError(err)
+}
+
+func render(format string, r view.ExtensionList) error {
 	switch format {
 	case "json":
-		err = r.RenderJSON()
-		utils.ExitIfError(err)
-		return
+		return view.RenderJSON(r.Writer, r.Data)
 	case "pretty-json":
-		err = r.RenderPrettyJSON()
-		utils.ExitIfError(err)
-		return
+		return view.RenderPrettyJSON(r.Writer, r.Data)
 	case "yaml":
-		err = r.RenderYAML()
-		utils.ExitIfError(err)
-		return
+		return view.RenderYAML(r.Writer, r.Data)
 	case "pretty":
-		err = r.Render()
-		utils.ExitIfError(err)
+		return r.Render()
 	default:
-		fmt.Println("Invalid output format")
+		return errors.New("invalid output format")
 	}
 }

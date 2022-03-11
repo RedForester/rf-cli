@@ -1,4 +1,4 @@
-package extension
+package create
 
 import (
 	"fmt"
@@ -11,12 +11,12 @@ import (
 	"os"
 )
 
-func NewCmdCreate() *cobra.Command {
+func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "create",
 		Short:   "Create new extension manifest.yaml",
 		Aliases: []string{"c"},
-		Run:     runCmdCreate,
+		Run:     run,
 	}
 
 	cmd.Flags().StringP("file", "f", "manifest.yaml", "file <path>")
@@ -25,7 +25,7 @@ func NewCmdCreate() *cobra.Command {
 	return cmd
 }
 
-func runCmdCreate(cmd *cobra.Command, _ []string) {
+func run(cmd *cobra.Command, _ []string) {
 	forceYes, err := cmd.Flags().GetBool("yes")
 
 	fmt.Print("Press ^C at any time to quit.\n\n")
