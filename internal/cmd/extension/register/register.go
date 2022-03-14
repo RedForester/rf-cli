@@ -6,6 +6,7 @@ import (
 	"github.com/deissh/rf-cli/pkg/log"
 	"github.com/deissh/rf-cli/pkg/manifest"
 	"github.com/deissh/rf-cli/pkg/rf"
+	"github.com/deissh/rf-cli/pkg/view"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -36,6 +37,9 @@ func run(cmd *cobra.Command, _ []string) {
 	info, err := loadManifest(path)
 	utils.ExitIfError(err)
 
+	err = view.NewManifest(info).Render()
+	utils.ExitIfError(err)
+
 	if err = info.Validate(); err != nil {
 		utils.ExitIfError(err)
 	}
@@ -48,12 +52,17 @@ func run(cmd *cobra.Command, _ []string) {
 
 	ext := info.ToExtension()
 
-	_, err = func() (*rf.Extension, error) {
+	data, err := func() (*rf.Extension, error) {
 		s := utils.PrintSpinner("Creating extension from manifest...")
 		defer s.Stop()
 
 		return client.Ext.Create(ext)
 	}()
+	utils.ExitIfError(err)
+
+	log.Info("Extension created, updating manifest")
+
+	err = writeManifest(path, manifest.FromExtension(data))
 	utils.ExitIfError(err)
 }
 
@@ -69,4 +78,18 @@ func loadManifest(path string) (*manifest.Manifest, error) {
 	defer f.Close()
 
 	return manifest.Read(f)
+}
+
+func writeManifest(path string, info *manifest.Manifest) error {
+	if !utils.FileExists(path) {
+		return os.ErrNotExist
+	}
+
+	f, err := os.OpenFile(path, os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	return manifest.Write(f, info)
 }

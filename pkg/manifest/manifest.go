@@ -6,7 +6,7 @@ import (
 )
 
 type Manifest struct {
-	ID               string            `yaml:"id,omitempty"`
+	ID               string            `yaml:"id,omitempty" validate:"uuid4"`
 	Name             string            `yaml:"name" validate:"required"`
 	Description      string            `yaml:"description"`
 	ShortDescription string            `yaml:"short_description"`
@@ -19,7 +19,7 @@ type Manifest struct {
 }
 
 type ExtUser struct {
-	ID        string `yaml:"id,omitempty"`
+	ID        string `yaml:"id,omitempty" validate:"uuid4"`
 	Username  string `yaml:"username"`
 	FirstName string `yaml:"first_name,omitempty"`
 	LastName  string `yaml:"last_name,omitempty"`

@@ -133,6 +133,7 @@ func askBaseExtInfo() (*manifest.Manifest, error) {
 			Username:  answers.Username,
 			FirstName: answers.FirstName,
 			LastName:  answers.LastName,
+			AvatarUrl: "https://avatars.redforester.com/?name=" + answers.Name,
 		},
 	}
 

@@ -21,13 +21,13 @@ func (e ExtensionsApi) GetAll() (*[]rf.Extension, error) {
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(resp.Status)
-	}
-
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New(resp.Status + " " + string(bodyBytes))
 	}
 
 	data := &[]rf.Extension{}
@@ -47,13 +47,13 @@ func (e ExtensionsApi) GetOwned() (*[]rf.Extension, error) {
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(resp.Status)
-	}
-
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New(resp.Status + " " + string(bodyBytes))
 	}
 
 	data := &[]rf.Extension{}
@@ -73,13 +73,13 @@ func (e ExtensionsApi) Get(id string) (*rf.Extension, error) {
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(resp.Status)
-	}
-
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New(resp.Status + " " + string(bodyBytes))
 	}
 
 	data, err := rf.UnmarshalExtension(bodyBytes)
@@ -106,13 +106,13 @@ func (e ExtensionsApi) Create(ext *rf.Extension) (*rf.Extension, error) {
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(resp.Status)
-	}
-
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New(resp.Status + " " + string(bodyBytes))
 	}
 
 	data, err := rf.UnmarshalExtension(bodyBytes)
@@ -139,13 +139,13 @@ func (e ExtensionsApi) Update(ext *rf.Extension) (*rf.Extension, error) {
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(resp.Status)
-	}
-
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New(resp.Status + " " + string(bodyBytes))
 	}
 
 	data, err := rf.UnmarshalExtension(bodyBytes)
