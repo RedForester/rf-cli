@@ -40,7 +40,7 @@ type RequiredType struct {
 }
 
 type ExtUser struct {
-	ID        string `json:"id"`
+	ID        string `json:"id,omitempty"`
 	Username  string `json:"username"`
 	FirstName string `json:"firstName,omitempty"`
 	LastName  string `json:"lastName,omitempty"`

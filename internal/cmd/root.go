@@ -102,7 +102,7 @@ func setupClient() {
 	userUsername := config.Config.Client.Username
 	pwdHash := config.Config.Client.PasswordHash
 
-	if username == "" {
+	if username != "" {
 		userUsername = username
 	}
 	if pwdHash == "" || askPassword || username != "" {

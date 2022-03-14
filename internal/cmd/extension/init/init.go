@@ -64,7 +64,14 @@ func createManifest(path string, info *manifest.Manifest) error {
 }
 
 func askBaseExtInfo() (*manifest.Manifest, error) {
-	result := manifest.Manifest{
+	answers := struct {
+		Name        string
+		Description string
+		Email       string
+		Username    string
+		FirstName   string
+		LastName    string
+	}{
 		Email: config.Config.Client.Username,
 	}
 
@@ -78,7 +85,7 @@ func askBaseExtInfo() (*manifest.Manifest, error) {
 			Transform: survey.Title,
 		},
 		{
-			Name: "Description",
+			Name: "description",
 			Prompt: &survey.Input{
 				Message: "Description (optional):",
 			},
@@ -87,14 +94,46 @@ func askBaseExtInfo() (*manifest.Manifest, error) {
 			Name: "email",
 			Prompt: &survey.Input{
 				Message: "Author email:",
-				Default: result.Email,
+				Default: answers.Email,
 			},
 			Validate: survey.Required,
 		},
+		{
+			Name: "username",
+			Prompt: &survey.Input{
+				Message: "Extension username (will be used as a unique extension identifier)",
+			},
+			Validate: survey.Required,
+		},
+		{
+			Name: "firstName",
+			Prompt: &survey.Input{
+				Message: "Extension user firstname (optional)",
+				Default: "Test",
+			},
+		},
+		{
+			Name: "lastName",
+			Prompt: &survey.Input{
+				Message: "Extension user lastname (optional)",
+				Default: "Extension",
+			},
+		},
 	}
 
-	if err := survey.Ask(q, &result); err != nil {
+	if err := survey.Ask(q, &answers); err != nil {
 		return nil, err
+	}
+
+	result := manifest.Manifest{
+		Name:        answers.Name,
+		Description: answers.Description,
+		Email:       answers.Email,
+		ExtensionUser: manifest.ExtUser{
+			Username:  answers.Username,
+			FirstName: answers.FirstName,
+			LastName:  answers.LastName,
+		},
 	}
 
 	if err := result.Validate(); err != nil {

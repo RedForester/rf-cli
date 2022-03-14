@@ -49,10 +49,10 @@ func run(cmd *cobra.Command, _ []string) {
 	ext := info.ToExtension()
 
 	_, err = func() (*rf.Extension, error) {
-		s := utils.PrintSpinner("Fetching extensions...")
+		s := utils.PrintSpinner("Creating extension from manifest...")
 		defer s.Stop()
 
-		return client.Ext.Update(ext)
+		return client.Ext.Create(ext)
 	}()
 	utils.ExitIfError(err)
 }
