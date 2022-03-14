@@ -6,7 +6,9 @@ import (
 )
 
 func Exit(err string) {
-	fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+	if err != "" {
+		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+	}
 	os.Exit(1)
 }
 

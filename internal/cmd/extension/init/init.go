@@ -1,4 +1,4 @@
-package create
+package init
 
 import (
 	"fmt"
@@ -13,10 +13,13 @@ import (
 
 func NewCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "create",
-		Short:   "Create new extension manifest.yaml",
-		Aliases: []string{"c"},
-		Run:     run,
+		Use:   "init",
+		Short: "Create a manifest.yaml file",
+		Long:  "Can be used to set up a new extension",
+		Aliases: []string{
+			"i",
+		},
+		Run: run,
 	}
 
 	cmd.Flags().StringP("file", "f", "manifest.yaml", "file <path>")
@@ -35,12 +38,8 @@ func run(cmd *cobra.Command, _ []string) {
 	err = view.NewManifest(info).Render()
 	utils.ExitIfError(err)
 
-	if !forceYes {
-		ok := true
-		prompt := &survey.Confirm{Message: "Is this OK?", Default: true}
-		if err = survey.AskOne(prompt, &ok); err != nil || !ok {
-			utils.Exit("aborted")
-		}
+	if ok := utils.Confirm(forceYes); !ok {
+		utils.Exit("aborted")
 	}
 
 	path, err := cmd.Flags().GetString("file")
@@ -48,6 +47,10 @@ func run(cmd *cobra.Command, _ []string) {
 
 	err = createManifest(path, info)
 	utils.ExitIfError(err)
+
+	fmt.Println()
+	fmt.Printf("The extension \"%s\" is initialized, to register the extension in the registry, run the command:\n", info.Name)
+	fmt.Println(" $ rf-cli extension register --help")
 }
 
 func createManifest(path string, info *manifest.Manifest) error {

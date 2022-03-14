@@ -48,7 +48,7 @@ func (e Extension) renderDescription() {
 func (e Extension) renderCommands() {
 	fmt.Println("\nCommands:")
 	for i, command := range e.Data.Commands {
-		fmt.Printf(" %d. %s\n", i+1, command.Name)
+		fmt.Printf(" %d. \"%s\"\n", i+1, command.Name)
 		fmt.Println("    Description:", command.Description)
 		if command.Group != nil {
 			fmt.Println("    Group:", command.Group)
