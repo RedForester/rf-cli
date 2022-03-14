@@ -17,6 +17,33 @@ type Manifest struct {
 	Commands         []rf.Command      `yaml:"commands"`
 }
 
+func FromExtension(info *rf.Extension) *Manifest {
+	return &Manifest{
+		ID:               info.ID,
+		Name:             info.Name,
+		Description:      info.Description,
+		ShortDescription: info.ShortDescription,
+		BaseURL:          info.BaseURL,
+		Email:            info.Email,
+		AvatarURL:        info.AvatarURL,
+		RequiredTypes:    info.RequiredTypes,
+		Commands:         info.Commands,
+	}
+}
+
 func (m Manifest) Validate() error {
 	return validator.New().Struct(m)
+}
+
+func (m Manifest) ToExtension() *rf.Extension {
+	return &rf.Extension{
+		Name:             m.Name,
+		Description:      m.Description,
+		ShortDescription: m.ShortDescription,
+		BaseURL:          m.BaseURL,
+		Email:            m.Email,
+		AvatarURL:        m.AvatarURL,
+		RequiredTypes:    m.RequiredTypes,
+		Commands:         m.Commands,
+	}
 }

@@ -90,6 +90,39 @@ func (e ExtensionsApi) Get(id string) (*rf.Extension, error) {
 	return &data, nil
 }
 
+func (e ExtensionsApi) Create(ext *rf.Extension) (*rf.Extension, error) {
+	var payloadBuf bytes.Buffer
+
+	err := json.NewEncoder(&payloadBuf).Encode(ext)
+	if err != nil {
+		return nil, err
+	}
+
+	req, _ := http.NewRequest("POST", e.Options.BaseURL+"/api/extensions", &payloadBuf)
+	resp, err := e.Client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New(resp.Status)
+	}
+
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := rf.UnmarshalExtension(bodyBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return &data, nil
+}
+
 func (e ExtensionsApi) Update(ext *rf.Extension) (*rf.Extension, error) {
 	var payloadBuf bytes.Buffer
 

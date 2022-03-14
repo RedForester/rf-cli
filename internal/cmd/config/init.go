@@ -26,7 +26,7 @@ func NewCmdInit() *cobra.Command {
 	return cmd
 }
 
-func run(cmd *cobra.Command, args []string) {
+func run(cmd *cobra.Command, _ []string) {
 	email, _ := cmd.Flags().GetString("username")
 	pwd, _ := cmd.Flags().GetString("password")
 	creds := &UserCreds{email, pwd}
@@ -81,9 +81,9 @@ func setUserCreds(creds *UserCreds) error {
 }
 
 func tryLogin(creds *UserCreds) (*rf.User, error) {
-	cl := factory.NewClient(creds.Email, md5FromString(creds.Password))
+	client := factory.NewClient(factory.BaseRFUrl, creds.Email, md5FromString(creds.Password))
 
-	return cl.User.GetMe()
+	return client.User.GetMe()
 }
 
 func askUserCredentials(creds *UserCreds) error {

@@ -13,8 +13,10 @@ func basicAuth(username, passwordHash string) string {
 
 func newHTTPClient(username, passwordHash string) (*http.Client, error) {
 	opts := []http_client.ClientOption{
-		http_client.AddHeader("Authorization", basicAuth(username, passwordHash)),
 		http_client.AddHeader("Content-Type", "application/json"),
+	}
+	if username != "" && passwordHash != "" {
+		opts = append(opts, http_client.AddHeader("Authorization", basicAuth(username, passwordHash)))
 	}
 
 	return http_client.NewHTTPClient(opts...), nil

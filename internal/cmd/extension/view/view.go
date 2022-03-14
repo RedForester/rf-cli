@@ -2,7 +2,6 @@ package view
 
 import (
 	"errors"
-	"github.com/deissh/rf-cli/internal/config"
 	"github.com/deissh/rf-cli/internal/factory"
 	"github.com/deissh/rf-cli/internal/utils"
 	"github.com/deissh/rf-cli/pkg/rf"
@@ -25,9 +24,9 @@ func NewCmd() *cobra.Command {
 }
 
 func run(cmd *cobra.Command, args []string) {
-	extId := args[0]
+	client := factory.ClientInstance
 
-	client := factory.NewClient(config.Config.Client.Username, config.Config.Client.PasswordHash)
+	extId := args[0]
 
 	data, err := func() (*rf.Extension, error) {
 		s := utils.PrintSpinner("Fetching extension information from RedForester...")

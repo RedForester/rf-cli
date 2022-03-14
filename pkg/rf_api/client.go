@@ -4,8 +4,6 @@ import (
 	"net/http"
 )
 
-var RfBaseurl = "https://beta.app.redforester.com"
-
 type Options struct {
 	BaseURL string
 }
@@ -15,11 +13,11 @@ type Client struct {
 	User *UserApi
 }
 
-func New(client *http.Client) *Client {
+func New(rfBaseUrl string, client *http.Client) *Client {
 	svc := Service{
 		Client: client,
 		Options: &Options{
-			BaseURL: RfBaseurl,
+			BaseURL: rfBaseUrl,
 		},
 	}
 

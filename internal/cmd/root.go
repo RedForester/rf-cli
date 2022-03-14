@@ -1,10 +1,14 @@
 package cmd
 
 import (
+	"crypto/md5"
+	"encoding/hex"
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/deissh/rf-cli/internal/build"
 	configCmd "github.com/deissh/rf-cli/internal/cmd/config"
 	extensionCmd "github.com/deissh/rf-cli/internal/cmd/extension"
 	"github.com/deissh/rf-cli/internal/config"
+	"github.com/deissh/rf-cli/internal/factory"
 	"github.com/deissh/rf-cli/internal/utils"
 	"github.com/deissh/rf-cli/pkg/log"
 	"github.com/spf13/cobra"
@@ -13,6 +17,10 @@ import (
 var (
 	configPath string
 	debug      bool
+
+	username    string
+	askPassword bool
+	apiUrl      string
 )
 
 func init() {
@@ -41,6 +49,8 @@ func init() {
 		}
 
 		log.Debug("Using config file: %s", config.GetConfigFile())
+
+		setupClient()
 	})
 }
 
@@ -59,6 +69,16 @@ func NewCmdRoot() *cobra.Command {
 		"Config file",
 	)
 	cmd.PersistentFlags().BoolVar(&debug, "debug", false, "Turn on debug output")
+	cmd.PersistentFlags().StringVar(
+		&apiUrl, "api", factory.BaseRFUrl,
+		"Override api redforester url from config",
+	)
+	cmd.PersistentFlags().StringVarP(
+		&username, "username", "U", "", "Username (for example \"username@mail.com\")",
+	)
+	cmd.PersistentFlags().BoolVarP(
+		&askPassword, "password", "W", false, "Force password prompt (should happen automatically)",
+	)
 
 	addChildCommands(cmd)
 
@@ -70,4 +90,33 @@ func addChildCommands(cmd *cobra.Command) {
 		configCmd.NewCmdConfig(),
 		extensionCmd.NewCmdExtension(),
 	)
+}
+
+func md5FromString(value string) string {
+	hash := md5.Sum([]byte(value))
+	return hex.EncodeToString(hash[:])
+}
+
+func setupClient() {
+	baseRFUrl := config.Config.Rf.BaseURL
+	userUsername := config.Config.Client.Username
+	pwdHash := config.Config.Client.PasswordHash
+
+	if username == "" {
+		userUsername = username
+	}
+	if pwdHash == "" || askPassword || username != "" {
+		var password string
+		prompt := &survey.Password{Message: "Password:"}
+		if err := survey.AskOne(prompt, &password); err != nil {
+			utils.Exit("invalid")
+		}
+		pwdHash = md5FromString(password)
+	}
+
+	if apiUrl != "" {
+		baseRFUrl = apiUrl
+	}
+
+	factory.ClientInstance = factory.NewClient(baseRFUrl, userUsername, pwdHash)
 }

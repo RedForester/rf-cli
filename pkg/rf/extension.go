@@ -40,8 +40,11 @@ type RequiredType struct {
 }
 
 type ExtUser struct {
-	ID       string `json:"id"`
-	Username string `json:"username"`
+	ID        string `json:"id"`
+	Username  string `json:"username"`
+	FirstName string `json:"firstName,omitempty"`
+	LastName  string `json:"lastName,omitempty"`
+	AvatarUrl string `json:"avatarUrl,omitempty"`
 }
 
 func UnmarshalExtension(data []byte) (Extension, error) {

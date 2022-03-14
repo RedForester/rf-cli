@@ -1,9 +1,11 @@
 package register
 
 import (
+	"github.com/deissh/rf-cli/internal/factory"
 	"github.com/deissh/rf-cli/internal/utils"
 	"github.com/deissh/rf-cli/pkg/log"
 	"github.com/deissh/rf-cli/pkg/manifest"
+	"github.com/deissh/rf-cli/pkg/rf"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -21,7 +23,9 @@ func NewCmd() *cobra.Command {
 	return cmd
 }
 
-func run(cmd *cobra.Command, args []string) {
+func run(cmd *cobra.Command, _ []string) {
+	client := factory.ClientInstance
+
 	forceYes, err := cmd.Flags().GetBool("yes")
 	utils.ExitIfError(err)
 
@@ -41,6 +45,16 @@ func run(cmd *cobra.Command, args []string) {
 	if ok := utils.Confirm(forceYes); !ok {
 		utils.Exit("aborted")
 	}
+
+	ext := info.ToExtension()
+
+	_, err = func() (*rf.Extension, error) {
+		s := utils.PrintSpinner("Fetching extensions...")
+		defer s.Stop()
+
+		return client.Ext.Update(ext)
+	}()
+	utils.ExitIfError(err)
 }
 
 func loadManifest(path string) (*manifest.Manifest, error) {

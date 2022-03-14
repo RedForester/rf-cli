@@ -3,7 +3,6 @@ package list
 import (
 	"errors"
 	"fmt"
-	"github.com/deissh/rf-cli/internal/config"
 	"github.com/deissh/rf-cli/internal/factory"
 	"github.com/deissh/rf-cli/internal/utils"
 	"github.com/deissh/rf-cli/pkg/rf"
@@ -20,17 +19,24 @@ func NewCmd() *cobra.Command {
 		Run:     run,
 	}
 
+	cmd.Flags().Bool("owned", false, "return all owned extensions")
 	cmd.Flags().StringP("format", "f", "pretty", "output format (json, pretty-json, yaml, pretty)")
 
 	return cmd
 }
 
 func run(cmd *cobra.Command, _ []string) {
-	client := factory.NewClient(config.Config.Client.Username, config.Config.Client.PasswordHash)
+	client := factory.ClientInstance
+
+	owned, _ := cmd.Flags().GetBool("owned")
 
 	data, err := func() (*[]rf.Extension, error) {
 		s := utils.PrintSpinner("Fetching extensions...")
 		defer s.Stop()
+
+		if owned {
+			return client.Ext.GetOwned()
+		}
 
 		return client.Ext.GetAll()
 	}()
