@@ -1,8 +1,8 @@
 package register
 
 import (
-	"fmt"
 	"github.com/deissh/rf-cli/internal/utils"
+	"github.com/deissh/rf-cli/pkg/log"
 	"github.com/deissh/rf-cli/pkg/manifest"
 	"github.com/spf13/cobra"
 	"os"
@@ -36,7 +36,7 @@ func run(cmd *cobra.Command, args []string) {
 		utils.ExitIfError(err)
 	}
 
-	fmt.Println("Manifest validated")
+	log.Info("Manifest validated")
 
 	if ok := utils.Confirm(forceYes); !ok {
 		utils.Exit("aborted")

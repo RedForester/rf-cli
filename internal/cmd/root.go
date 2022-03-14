@@ -1,12 +1,12 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/deissh/rf-cli/internal/build"
 	configCmd "github.com/deissh/rf-cli/internal/cmd/config"
 	extensionCmd "github.com/deissh/rf-cli/internal/cmd/extension"
 	"github.com/deissh/rf-cli/internal/config"
 	"github.com/deissh/rf-cli/internal/utils"
+	"github.com/deissh/rf-cli/pkg/log"
 	"github.com/spf13/cobra"
 )
 
@@ -18,8 +18,10 @@ var (
 func init() {
 	cobra.OnInitialize(func() {
 		if debug {
-			fmt.Printf("RF CLI version %s (%s)\n", build.Version, build.Date)
+			log.Level = log.DebugLevel
 		}
+
+		log.Debug("RF CLI version %s (%s)", build.Version, build.Date)
 
 		path := config.GetConfigFile()
 
@@ -28,20 +30,17 @@ func init() {
 		}
 
 		if !utils.FileExists(path) {
-			fmt.Println("Missing configuration file.")
-			fmt.Println("Run 'rf config' to configure the tool.")
-			fmt.Println()
+			log.Warn("Missing configuration file.")
+			log.Warn("Run 'rf config' to configure the tool.")
 			return
 		}
 
 		if err := config.Load(path); err != nil {
-			fmt.Printf("Config not loaded, %e\n", err)
+			log.Warn("Config not loaded, %e\n", err)
 			return
 		}
 
-		if debug {
-			fmt.Printf("Using config file: %s\n", config.GetConfigFile())
-		}
+		log.Debug("Using config file: %s", config.GetConfigFile())
 	})
 }
 

@@ -1,13 +1,14 @@
 package utils
 
 import (
-	"fmt"
+	"errors"
+	"github.com/deissh/rf-cli/pkg/log"
 	"os"
 )
 
 func Exit(err string) {
 	if err != "" {
-		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+		log.Error(errors.New(err))
 	}
 	os.Exit(1)
 }
@@ -17,8 +18,6 @@ func ExitIfError(err error) {
 		return
 	}
 
-	msg := fmt.Sprintf("Error: %s", err.Error())
-
-	fmt.Fprintf(os.Stderr, "%s\n", msg)
+	log.Error(err)
 	os.Exit(1)
 }
