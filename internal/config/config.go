@@ -1,8 +1,6 @@
 package config
 
 import (
-	"fmt"
-	"github.com/deissh/rf-cli/internal/utils"
 	"gopkg.in/yaml.v3"
 	"os"
 )
@@ -33,10 +31,6 @@ func New() *config {
 }
 
 func Load(configPath string) error {
-	if !utils.FileExists(configPath) {
-		fmt.Println("config file not exist, please sign in first")
-	}
-
 	file, err := os.Open(configPath)
 	if err != nil {
 		return err

@@ -9,7 +9,9 @@ import (
 	"github.com/deissh/rf-cli/internal/factory"
 	"github.com/deissh/rf-cli/internal/utils"
 	"github.com/deissh/rf-cli/pkg/rf"
+	"github.com/deissh/rf-cli/pkg/view"
 	"github.com/spf13/cobra"
+	"os"
 )
 
 func NewCmdInit() *cobra.Command {
@@ -68,13 +70,13 @@ func setUserCreds(creds *UserCreds) error {
 		return err
 	}
 
-	useCurrentUser := true
-	prompt := &survey.Confirm{
-		Message: fmt.Sprintf("Do you like use user %s?", user.Username),
+	r := view.CurrentUser{Data: user, Writer: os.Stdout}
+	if err := r.Render(); err != nil {
+		return err
 	}
-	_ = survey.AskOne(prompt, &useCurrentUser)
-	if !useCurrentUser {
-		return setUserCreds(creds)
+
+	if !utils.Confirm(false) {
+		utils.Exit("aborted")
 	}
 
 	return nil

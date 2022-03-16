@@ -17,7 +17,12 @@ const (
 	FileExt  = "yml"
 )
 
+var CurrentPath = ""
+
 func GetConfigFile() string {
+	if CurrentPath != "" {
+		return CurrentPath
+	}
 	return fmt.Sprintf("%s/%s.%s", GetConfigHome(), FileName, FileExt)
 }
 

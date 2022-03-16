@@ -37,14 +37,11 @@ func init() {
 			path = configPath
 		}
 
-		if !utils.FileExists(path) {
+		config.CurrentPath = path
+		if err := config.Load(path); err != nil {
+			log.Warn("Config not loaded, %s", err)
 			log.Warn("Missing configuration file.")
 			log.Warn("Run 'rf config' to configure the tool.")
-			return
-		}
-
-		if err := config.Load(path); err != nil {
-			log.Warn("Config not loaded, %e\n", err)
 			return
 		}
 

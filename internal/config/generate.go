@@ -12,14 +12,14 @@ func Generate() error {
 		s := utils.PrintSpinner("Checking configuration...")
 		defer s.Stop()
 
-		return utils.FileExists(GetConfigFile())
+		return utils.FileExists(path)
 	}()
 
 	if err := func() error {
 		s := utils.PrintSpinner("Creating new configuration...")
 		defer s.Stop()
 
-		return create()
+		return create(path)
 	}(); err != nil {
 		return err
 	}
@@ -27,23 +27,20 @@ func Generate() error {
 	return Write(path)
 }
 
-func create() error {
+func create(path string) error {
 	const perm = 0o700
-	path := GetConfigHome()
+	//if _, err := os.Stat(path); err != nil {
+	//	if err := os.MkdirAll(path, perm); err != nil {
+	//		return err
+	//	}
+	//}
 
-	if _, err := os.Stat(path); err != nil {
-		if err := os.MkdirAll(path, perm); err != nil {
+	if utils.FileExists(path) {
+		if err := os.Rename(path, path+".bkp"); err != nil {
 			return err
 		}
 	}
-
-	file := GetConfigFile()
-	if utils.FileExists(file) {
-		if err := os.Rename(file, file+".bkp"); err != nil {
-			return err
-		}
-	}
-	_, err := os.OpenFile(file, os.O_CREATE, perm)
+	_, err := os.OpenFile(path, os.O_CREATE, perm)
 
 	return err
 }
