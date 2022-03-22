@@ -31,6 +31,8 @@ func New() *config {
 }
 
 func Load(configPath string) error {
+	CurrentPath = configPath
+
 	file, err := os.Open(configPath)
 	if err != nil {
 		return err

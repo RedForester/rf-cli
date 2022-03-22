@@ -1,7 +1,6 @@
 package rf_api
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/deissh/rf-cli/pkg/rf"
 	"io/ioutil"
@@ -29,11 +28,10 @@ func (u UserApi) GetMe() (*rf.User, error) {
 		return nil, err
 	}
 
-	data := &rf.User{}
-	err = json.Unmarshal(bodyBytes, data)
+	data, err := rf.UnmarshalUser(bodyBytes)
 	if err != nil {
 		return nil, err
 	}
 
-	return data, nil
+	return &data, nil
 }
