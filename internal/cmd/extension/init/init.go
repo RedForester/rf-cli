@@ -29,7 +29,7 @@ func NewCmd() *cobra.Command {
 }
 
 func run(cmd *cobra.Command, _ []string) {
-	forceYes, err := cmd.Flags().GetBool("yes")
+	forceYes, _ := cmd.Flags().GetBool("yes")
 
 	fmt.Print("Press ^C at any time to quit.\n\n")
 	info, err := askBaseExtInfo()
