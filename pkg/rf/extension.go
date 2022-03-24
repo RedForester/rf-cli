@@ -7,7 +7,7 @@ type Extension struct {
 	Name             string         `json:"name"`
 	Description      string         `json:"description"`
 	ShortDescription string         `json:"shortDescription"`
-	BaseURL          *string        `json:"baseUrl"`
+	BaseURL          *string        `json:"baseUrl" yaml:"baseURL,omitempty"`
 	Email            string         `json:"email"`
 	AvatarURL        *string        `json:"avatarUrl"`
 	Published        bool           `json:"published"`
@@ -18,16 +18,16 @@ type Extension struct {
 }
 
 type Command struct {
-	Name        string      `json:"name"`
-	Group       interface{} `json:"group"`
-	Type        Type        `json:"type"`
-	Description string      `json:"description"`
-	ShowRules   []ShowRule  `json:"showRules"`
+	Name        string     `json:"name"`
+	Group       *string    `json:"group,omitempty" yaml:"group,omitempty"`
+	Type        Type       `json:"type"`
+	Description string     `json:"description"`
+	ShowRules   []ShowRule `json:"showRules" yaml:"showRules"`
 }
 
 type Type struct {
-	Action *string `json:"action"`
-	URL    *string `json:"url"`
+	Action *string `json:"action,omitempty" yaml:"action,omitempty"`
+	URL    *string `json:"url,omitempty" yaml:"url,omitempty"`
 }
 
 type Owner struct {

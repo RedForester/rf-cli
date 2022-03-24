@@ -9,21 +9,21 @@ type Manifest struct {
 	ID               string            `yaml:"id,omitempty" validate:"omitempty,uuid4"`
 	Name             string            `yaml:"name" validate:"required"`
 	Description      string            `yaml:"description"`
-	ShortDescription string            `yaml:"short_description"`
+	ShortDescription string            `yaml:"shortDescription"`
 	BaseURL          *string           `yaml:"baseUrl,omitempty"`
 	Email            string            `yaml:"email" validate:"email"`
-	AvatarURL        *string           `yaml:"avatar_url,omitempty"`
-	RequiredTypes    []rf.RequiredType `yaml:"required_types"`
+	AvatarURL        *string           `yaml:"avatarUrl,omitempty"`
+	RequiredTypes    []rf.RequiredType `yaml:"requiredTypes"`
 	Commands         []rf.Command      `yaml:"commands"`
-	ExtensionUser    ExtUser           `yaml:"extension_user"`
+	ExtensionUser    ExtUser           `yaml:"extensionUser"`
 }
 
 type ExtUser struct {
 	ID        string `yaml:"id,omitempty" validate:"omitempty,uuid4"`
 	Username  string `yaml:"username"`
-	FirstName string `yaml:"first_name,omitempty"`
-	LastName  string `yaml:"last_name,omitempty"`
-	AvatarUrl string `yaml:"avatar_url,omitempty"`
+	FirstName string `yaml:"firstName,omitempty"`
+	LastName  string `yaml:"lastName,omitempty"`
+	AvatarUrl string `yaml:"avatarUrl,omitempty"`
 }
 
 func FromExtension(info *rf.Extension) *Manifest {
