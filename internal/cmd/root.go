@@ -111,7 +111,7 @@ func setupClient() {
 		pwdHash = md5FromString(password)
 	}
 
-	if apiUrl != "" {
+	if apiUrl != "" && apiUrl != factory.BaseRFUrl {
 		baseRFUrl = apiUrl
 	}
 

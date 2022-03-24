@@ -15,7 +15,6 @@ func Write(w io.Writer, info *Manifest) error {
 		os.Exit(1)
 	}
 
-	fmt.Println(data)
 	_, err = w.Write(data)
 
 	return err
