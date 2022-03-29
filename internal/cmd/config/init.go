@@ -4,11 +4,11 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
-	"fmt"
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/deissh/rf-cli/internal/config"
 	"github.com/deissh/rf-cli/internal/factory"
 	"github.com/deissh/rf-cli/internal/utils"
+	"github.com/deissh/rf-cli/pkg/log"
 	"github.com/deissh/rf-cli/pkg/rf"
 	"github.com/deissh/rf-cli/pkg/view"
 	"github.com/spf13/cobra"
@@ -47,7 +47,8 @@ func run(cmd *cobra.Command, _ []string) {
 
 	err = config.Generate()
 	utils.ExitIfError(err)
-	fmt.Println("Configuration generated")
+	log.Info("Configuration generated")
+	log.Info("Path: %s", config.GetConfigFile())
 }
 
 type UserCreds struct {
