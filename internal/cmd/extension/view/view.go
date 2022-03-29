@@ -15,6 +15,7 @@ func NewCmd() *cobra.Command {
 		Use:     "view {extId} [-f format]",
 		Short:   "View information about extension",
 		Aliases: []string{"show"},
+		Args:    cobra.ExactArgs(1),
 		Run:     run,
 	}
 
