@@ -54,6 +54,11 @@ func run(cmd *cobra.Command, _ []string) {
 }
 
 func createManifest(path string, info *manifest.Manifest) error {
+	err := utils.CreateFileAndBackup(path)
+	if err != nil {
+		return err
+	}
+
 	f, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
 		return err
