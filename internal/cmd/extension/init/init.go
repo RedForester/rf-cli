@@ -30,7 +30,7 @@ func NewCmd() *cobra.Command {
 }
 
 func run(cmd *cobra.Command, _ []string) {
-	forceYes, err := cmd.Flags().GetBool("yes")
+	forceYes, _ := cmd.Flags().GetBool("yes")
 	path, err := cmd.Flags().GetString("file")
 	utils.ExitIfError(err)
 
@@ -76,8 +76,7 @@ func loadManifest(path string) (*manifest.Manifest, error) {
 	}
 	defer f.Close()
 
-	info, err = manifest.Read(f)
-	return info, nil
+	return manifest.Read(f)
 }
 
 func createManifest(path string, info *manifest.Manifest) error {
