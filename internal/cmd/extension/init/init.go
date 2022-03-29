@@ -5,6 +5,7 @@ import (
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/deissh/rf-cli/internal/config"
 	"github.com/deissh/rf-cli/internal/utils"
+	"github.com/deissh/rf-cli/pkg/log"
 	"github.com/deissh/rf-cli/pkg/manifest"
 	"github.com/deissh/rf-cli/pkg/view"
 	"github.com/spf13/cobra"
@@ -29,10 +30,16 @@ func NewCmd() *cobra.Command {
 }
 
 func run(cmd *cobra.Command, _ []string) {
-	forceYes, _ := cmd.Flags().GetBool("yes")
+	forceYes, err := cmd.Flags().GetBool("yes")
+	path, err := cmd.Flags().GetString("file")
+	utils.ExitIfError(err)
+
+	info, err := loadManifest(path)
+	utils.ExitIfError(err)
+	log.Debug("data: %d", *info)
 
 	fmt.Print("Press ^C at any time to quit.\n\n")
-	info, err := askBaseExtInfo()
+	err = askBaseExtInfo(info)
 	utils.ExitIfError(err)
 
 	err = view.NewManifest(info).Render()
@@ -42,15 +49,35 @@ func run(cmd *cobra.Command, _ []string) {
 		utils.Exit("aborted")
 	}
 
-	path, err := cmd.Flags().GetString("file")
-	utils.ExitIfError(err)
-
 	err = createManifest(path, info)
 	utils.ExitIfError(err)
 
 	fmt.Println()
 	fmt.Printf("The extension \"%s\" is initialized, to register the extension in the registry, run the command:\n", info.Name)
 	fmt.Println(" $ rf-cli extension register --help")
+}
+
+func loadManifest(path string) (*manifest.Manifest, error) {
+	info := &manifest.Manifest{
+		Email: config.Config.Client.Username,
+		ExtensionUser: manifest.ExtUser{
+			FirstName: "Test",
+			LastName:  "Extension",
+		},
+	}
+
+	if !utils.FileExists(path) {
+		return info, nil
+	}
+
+	f, err := os.OpenFile(path, os.O_RDONLY, 0644)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	info, err = manifest.Read(f)
+	return info, nil
 }
 
 func createManifest(path string, info *manifest.Manifest) error {
@@ -68,7 +95,7 @@ func createManifest(path string, info *manifest.Manifest) error {
 	return manifest.Write(f, info)
 }
 
-func askBaseExtInfo() (*manifest.Manifest, error) {
+func askBaseExtInfo(info *manifest.Manifest) error {
 	answers := struct {
 		Name        string
 		Description string
@@ -77,13 +104,19 @@ func askBaseExtInfo() (*manifest.Manifest, error) {
 		FirstName   string
 		LastName    string
 	}{
-		Email: config.Config.Client.Username,
+		Name:        info.Name,
+		Description: info.Description,
+		Email:       info.Email,
+		Username:    info.ExtensionUser.Username,
+		FirstName:   info.ExtensionUser.FirstName,
+		LastName:    info.ExtensionUser.LastName,
 	}
 
 	q := []*survey.Question{
 		{
 			Name: "name",
 			Prompt: &survey.Input{
+				Default: answers.Name,
 				Message: "Extensions name:",
 			},
 			Validate:  survey.Required,
@@ -92,13 +125,14 @@ func askBaseExtInfo() (*manifest.Manifest, error) {
 		{
 			Name: "description",
 			Prompt: &survey.Input{
+				Default: answers.Description,
 				Message: "Description (optional):",
 			},
 		},
 		{
 			Name: "email",
 			Prompt: &survey.Input{
-				Message: "Author email:",
+				Message: "Support email:",
 				Default: answers.Email,
 			},
 			Validate: survey.Required,
@@ -106,6 +140,7 @@ func askBaseExtInfo() (*manifest.Manifest, error) {
 		{
 			Name: "username",
 			Prompt: &survey.Input{
+				Default: answers.Username,
 				Message: "Extension username (will be used as a unique extension identifier)",
 			},
 			Validate: survey.Required,
@@ -114,37 +149,35 @@ func askBaseExtInfo() (*manifest.Manifest, error) {
 			Name: "firstName",
 			Prompt: &survey.Input{
 				Message: "Extension user firstname (optional)",
-				Default: "Test",
+				Default: answers.FirstName,
 			},
 		},
 		{
 			Name: "lastName",
 			Prompt: &survey.Input{
 				Message: "Extension user lastname (optional)",
-				Default: "Extension",
+				Default: answers.LastName,
 			},
 		},
 	}
 
 	if err := survey.Ask(q, &answers); err != nil {
-		return nil, err
+		return err
 	}
 
-	result := manifest.Manifest{
-		Name:        answers.Name,
-		Description: answers.Description,
-		Email:       answers.Email,
-		ExtensionUser: manifest.ExtUser{
-			Username:  answers.Username,
-			FirstName: answers.FirstName,
-			LastName:  answers.LastName,
-			AvatarUrl: "https://avatars.redforester.com/?name=" + answers.Name,
-		},
+	info.Name = answers.Name
+	info.Description = answers.Description
+	info.Email = answers.Email
+	info.ExtensionUser.Username = answers.Username
+	info.ExtensionUser.FirstName = answers.FirstName
+	info.ExtensionUser.LastName = answers.LastName
+	if info.ExtensionUser.AvatarUrl == "" {
+		info.ExtensionUser.AvatarUrl = "https://avatars.redforester.com/?name=" + answers.Name
 	}
 
-	if err := result.Validate(); err != nil {
-		return nil, err
+	if err := info.Validate(); err != nil {
+		return err
 	}
 
-	return &result, nil
+	return nil
 }
