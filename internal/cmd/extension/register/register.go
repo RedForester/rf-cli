@@ -35,7 +35,12 @@ func run(cmd *cobra.Command, _ []string) {
 
 	// todo: more complex errors
 	info, err := loadManifest(path)
-	utils.ExitIfError(err)
+	if err != nil {
+		log.Warn("manifest not loaded, %s", err)
+		log.Warn("Run command to create manifest.")
+		log.Warn(" $ rf-cli extension init --help")
+		utils.Exit("")
+	}
 
 	err = view.NewManifest(info).Render()
 	utils.ExitIfError(err)
