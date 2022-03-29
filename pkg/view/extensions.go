@@ -17,7 +17,7 @@ func (l ExtensionList) header() []string {
 	return []string{
 		"ID",
 		"NAME",
-		"EMAIL",
+		"SUPPORT",
 		"BASE URL",
 		"DESCRIPTION",
 	}
