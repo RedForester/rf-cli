@@ -3,6 +3,7 @@ package config
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/deissh/rf-cli/internal/config"
@@ -66,8 +67,8 @@ func setUserCreds(creds *UserCreds) error {
 
 		return tryLogin(creds)
 	}()
-	if err != nil {
-		return err
+	if err != nil || user.Username == "nobody" {
+		return errors.New("wrong login or password")
 	}
 
 	r := view.CurrentUser{Data: user, Writer: os.Stdout}
