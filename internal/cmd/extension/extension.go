@@ -4,6 +4,7 @@ import (
 	initCmd "github.com/deissh/rf-cli/internal/cmd/extension/init"
 	"github.com/deissh/rf-cli/internal/cmd/extension/list"
 	"github.com/deissh/rf-cli/internal/cmd/extension/register"
+	"github.com/deissh/rf-cli/internal/cmd/extension/update"
 	"github.com/deissh/rf-cli/internal/cmd/extension/view"
 	"github.com/spf13/cobra"
 )
@@ -20,6 +21,7 @@ func NewCmdExtension() *cobra.Command {
 		view.NewCmd(),
 		initCmd.NewCmd(),
 		register.NewCmd(),
+		update.NewCmd(),
 	)
 
 	return cmd
