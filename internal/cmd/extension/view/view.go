@@ -19,7 +19,7 @@ func NewCmd() *cobra.Command {
 		Run:     run,
 	}
 
-	cmd.Flags().StringP("format", "f", "pretty", "output format (json, pretty-json, yaml, pretty)")
+	cmd.Flags().String("format", "pretty", "output format (json, pretty-json, yaml, pretty)")
 
 	return cmd
 }

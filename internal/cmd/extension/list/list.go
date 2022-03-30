@@ -20,7 +20,7 @@ func NewCmd() *cobra.Command {
 	}
 
 	cmd.Flags().Bool("owned", false, "return all owned extensions")
-	cmd.Flags().StringP("format", "f", "pretty", "output format (json, pretty-json, yaml, pretty)")
+	cmd.Flags().String("format", "pretty", "output format (json, pretty-json, yaml, pretty)")
 
 	return cmd
 }

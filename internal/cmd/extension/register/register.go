@@ -8,7 +8,6 @@ import (
 	"github.com/deissh/rf-cli/pkg/rf"
 	"github.com/deissh/rf-cli/pkg/view"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 func NewCmd() *cobra.Command {
@@ -34,7 +33,7 @@ func run(cmd *cobra.Command, _ []string) {
 	utils.ExitIfError(err)
 
 	// todo: more complex errors
-	info, err := loadManifest(path)
+	info, err := manifest.ReadByPath(path)
 	if err != nil {
 		log.Warn("manifest not loaded, %s", err)
 		log.Warn("Run command to create manifest.")
@@ -67,34 +66,6 @@ func run(cmd *cobra.Command, _ []string) {
 
 	log.Info("Extension created, updating manifest")
 
-	err = writeManifest(path, manifest.FromExtension(data))
+	err = manifest.WriteByPath(path, manifest.FromExtension(data))
 	utils.ExitIfError(err)
-}
-
-func loadManifest(path string) (*manifest.Manifest, error) {
-	if !utils.FileExists(path) {
-		return nil, os.ErrNotExist
-	}
-
-	f, err := os.OpenFile(path, os.O_RDONLY, 0644)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	return manifest.Read(f)
-}
-
-func writeManifest(path string, info *manifest.Manifest) error {
-	if !utils.FileExists(path) {
-		return os.ErrNotExist
-	}
-
-	f, err := os.OpenFile(path, os.O_WRONLY, 0644)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	return manifest.Write(f, info)
 }

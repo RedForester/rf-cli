@@ -9,7 +9,6 @@ import (
 	"github.com/deissh/rf-cli/pkg/manifest"
 	"github.com/deissh/rf-cli/pkg/view"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 func NewCmd() *cobra.Command {
@@ -70,13 +69,7 @@ func loadManifest(path string) (*manifest.Manifest, error) {
 		return info, nil
 	}
 
-	f, err := os.OpenFile(path, os.O_RDONLY, 0644)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	return manifest.Read(f)
+	return manifest.ReadByPath(path)
 }
 
 func createManifest(path string, info *manifest.Manifest) error {
@@ -85,13 +78,7 @@ func createManifest(path string, info *manifest.Manifest) error {
 		return err
 	}
 
-	f, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR, 0644)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	return manifest.Write(f, info)
+	return manifest.WriteByPath(path, info)
 }
 
 func askBaseExtInfo(info *manifest.Manifest) error {

@@ -131,7 +131,7 @@ func (e ExtensionsApi) Update(ext *rf.Extension) (*rf.Extension, error) {
 		return nil, err
 	}
 
-	req, _ := http.NewRequest("PATCH", e.Options.BaseURL+"/api/extensions/"+ext.ID, &payloadBuf)
+	req, _ := http.NewRequest("POST", e.Options.BaseURL+"/api/extensions/"+ext.ID, &payloadBuf)
 	resp, err := e.Client.Do(req)
 	if err != nil {
 		return nil, err
