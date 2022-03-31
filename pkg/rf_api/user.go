@@ -3,7 +3,7 @@ package rf_api
 import (
 	"errors"
 	"github.com/deissh/rf-cli/pkg/rf"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -23,7 +23,7 @@ func (u UserApi) GetMe() (*rf.User, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}

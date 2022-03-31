@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/deissh/rf-cli/pkg/rf"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -21,7 +21,7 @@ func (e ExtensionsApi) GetAll() (*[]rf.Extension, error) {
 
 	defer resp.Body.Close()
 
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (e ExtensionsApi) GetOwned() (*[]rf.Extension, error) {
 
 	defer resp.Body.Close()
 
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func (e ExtensionsApi) Get(id string) (*rf.Extension, error) {
 
 	defer resp.Body.Close()
 
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -106,7 +106,7 @@ func (e ExtensionsApi) Create(ext *rf.Extension) (*rf.Extension, error) {
 
 	defer resp.Body.Close()
 
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -139,7 +139,7 @@ func (e ExtensionsApi) Update(ext *rf.Extension) (*rf.Extension, error) {
 
 	defer resp.Body.Close()
 
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
