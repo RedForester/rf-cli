@@ -53,6 +53,7 @@ func (m Manifest) Validate() error {
 
 func (m Manifest) ToExtension() *rf.Extension {
 	return &rf.Extension{
+		ID:               m.ID,
 		Name:             m.Name,
 		Description:      m.Description,
 		ShortDescription: m.ShortDescription,
