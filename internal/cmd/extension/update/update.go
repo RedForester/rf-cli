@@ -8,7 +8,6 @@ import (
 	"github.com/deissh/rf-cli/pkg/rf"
 	"github.com/deissh/rf-cli/pkg/view"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 func NewCmd() *cobra.Command {
@@ -71,29 +70,20 @@ func run(cmd *cobra.Command, args []string) {
 }
 
 func loadManifest(path string) (*manifest.Manifest, error) {
+	info := &manifest.Manifest{}
+
 	if !utils.FileExists(path) {
-		return nil, os.ErrNotExist
+		return info, nil
 	}
 
-	f, err := os.OpenFile(path, os.O_RDONLY, 0644)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	return manifest.Read(f)
+	return manifest.ReadByPath(path)
 }
 
 func writeManifest(path string, info *manifest.Manifest) error {
-	if !utils.FileExists(path) {
-		return os.ErrNotExist
-	}
-
-	f, err := os.OpenFile(path, os.O_WRONLY, 0644)
+	err := utils.CreateFileAndBackup(path)
 	if err != nil {
 		return err
 	}
-	defer f.Close()
 
-	return manifest.Write(f, info)
+	return manifest.WriteByPath(path, info)
 }
