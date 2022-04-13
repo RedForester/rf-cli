@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"github.com/deissh/rf-cli/pkg/extension"
-	"io/ioutil"
+	"github.com/deissh/rf-cli/pkg/rf"
+	"io"
 	"net/http"
 )
 
@@ -13,7 +13,7 @@ type ExtensionsApi struct {
 	Service
 }
 
-func (e ExtensionsApi) GetAll() (*[]extension.Extension, error) {
+func (e ExtensionsApi) GetAll() (*[]rf.Extension, error) {
 	resp, err := e.Client.Get(e.Options.BaseURL + "/api/extensions")
 	if err != nil {
 		return nil, err
@@ -21,16 +21,16 @@ func (e ExtensionsApi) GetAll() (*[]extension.Extension, error) {
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(resp.Status)
-	}
-
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
 
-	data := &[]extension.Extension{}
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New(resp.Status + " " + string(bodyBytes))
+	}
+
+	data := &[]rf.Extension{}
 	err = json.Unmarshal(bodyBytes, data)
 	if err != nil {
 		return nil, err
@@ -39,7 +39,7 @@ func (e ExtensionsApi) GetAll() (*[]extension.Extension, error) {
 	return data, nil
 }
 
-func (e ExtensionsApi) GetOwned() (*[]extension.Extension, error) {
+func (e ExtensionsApi) GetOwned() (*[]rf.Extension, error) {
 	resp, err := e.Client.Get(e.Options.BaseURL + "/api/extensions/owned")
 	if err != nil {
 		return nil, err
@@ -47,16 +47,16 @@ func (e ExtensionsApi) GetOwned() (*[]extension.Extension, error) {
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(resp.Status)
-	}
-
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
 
-	data := &[]extension.Extension{}
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New(resp.Status + " " + string(bodyBytes))
+	}
+
+	data := &[]rf.Extension{}
 	err = json.Unmarshal(bodyBytes, data)
 	if err != nil {
 		return nil, err
@@ -65,7 +65,7 @@ func (e ExtensionsApi) GetOwned() (*[]extension.Extension, error) {
 	return data, nil
 }
 
-func (e ExtensionsApi) Get(id string) (*extension.Extension, error) {
+func (e ExtensionsApi) Get(id string) (*rf.Extension, error) {
 	resp, err := e.Client.Get(e.Options.BaseURL + "/api/extensions/" + id)
 	if err != nil {
 		return nil, err
@@ -73,25 +73,57 @@ func (e ExtensionsApi) Get(id string) (*extension.Extension, error) {
 
 	defer resp.Body.Close()
 
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
 	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(resp.Status)
+		return nil, errors.New(resp.Status + " " + string(bodyBytes))
 	}
 
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	data, err := rf.UnmarshalExtension(bodyBytes)
 	if err != nil {
 		return nil, err
 	}
 
-	data := &extension.Extension{}
-	err = json.Unmarshal(bodyBytes, data)
-	if err != nil {
-		return nil, err
-	}
-
-	return data, nil
+	return &data, nil
 }
 
-func (e ExtensionsApi) Update(ext *extension.Extension) (*extension.Extension, error) {
+func (e ExtensionsApi) Create(ext *rf.Extension) (*rf.Extension, error) {
+	var payloadBuf bytes.Buffer
+
+	err := json.NewEncoder(&payloadBuf).Encode(ext)
+	if err != nil {
+		return nil, err
+	}
+
+	req, _ := http.NewRequest("POST", e.Options.BaseURL+"/api/extensions", &payloadBuf)
+	resp, err := e.Client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New(resp.Status + " " + string(bodyBytes))
+	}
+
+	data, err := rf.UnmarshalExtension(bodyBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return &data, nil
+}
+
+func (e ExtensionsApi) Update(ext *rf.Extension) (*rf.Extension, error) {
 	var payloadBuf bytes.Buffer
 
 	err := json.NewEncoder(&payloadBuf).Encode(ext)
@@ -107,20 +139,19 @@ func (e ExtensionsApi) Update(ext *extension.Extension) (*extension.Extension, e
 
 	defer resp.Body.Close()
 
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
 	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(resp.Status)
+		return nil, errors.New(resp.Status + " " + string(bodyBytes))
 	}
 
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	data, err := rf.UnmarshalExtension(bodyBytes)
 	if err != nil {
 		return nil, err
 	}
 
-	data := &extension.Extension{}
-	err = json.Unmarshal(bodyBytes, data)
-	if err != nil {
-		return nil, err
-	}
-
-	return data, nil
+	return &data, nil
 }

@@ -1,43 +1,68 @@
 package config
 
 import (
-	"fmt"
-	"github.com/spf13/viper"
+	"gopkg.in/yaml.v3"
 	"os"
-	"strings"
 )
 
-type Config struct {
-	Rf     RfConfig     `mapstructure:"rf"`
-	Client ClientConfig `mapstructure:"client"`
+var Config = New()
+
+type config struct {
+	Rf     rfConfig     `yaml:"rf"`
+	Client clientConfig `yaml:"client"`
 }
 
-type RfConfig struct {
-	BaseURL string `mapstructure:"base_url"`
+type rfConfig struct {
+	BaseURL string `yaml:"base_url"`
 }
 
-type ClientConfig struct {
-	Username     string `mapstructure:"username"`
-	PasswordHash string `mapstructure:"password_hash"`
+type clientConfig struct {
+	Username     string `yaml:"username"`
+	PasswordHash string `yaml:"password_hash"`
 }
 
-func New() *Config {
-	c := Config{}
+// New create config with default value
+func New() *config {
+	return &config{
+		Rf: rfConfig{
+			BaseURL: "https://beta.app.redforester.com",
+		},
+	}
+}
 
-	err := viper.Unmarshal(&c)
+func Load(configPath string) error {
+	CurrentPath = configPath
+
+	file, err := os.Open(configPath)
 	if err != nil {
-		fmt.Println(err)
+		return err
+	}
+	defer file.Close()
+
+	d := yaml.NewDecoder(file)
+	if err := d.Decode(&Config); err != nil {
+		return err
 	}
 
-	baseURL := c.Rf.BaseURL
-	if len(baseURL) == 0 {
-		fmt.Println("please edit base url first; `rf config edit`")
-		os.Exit(1)
-	}
-	if !strings.HasPrefix(baseURL, "http") {
-		baseURL = "https://" + baseURL
-	}
-	c.Rf.BaseURL = strings.TrimSuffix(baseURL, "/")
+	return nil
+}
 
-	return &c
+func Write(path string) error {
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	out, err := yaml.Marshal(Config)
+	if err != nil {
+		return err
+	}
+
+	_, err = file.Write(out)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

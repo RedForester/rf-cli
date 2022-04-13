@@ -1,38 +1,43 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
 )
 
 const (
-	RF_CONFIG_DIR   = "GH_CONFIG_DIR"
-	XDG_CONFIG_HOME = "XDG_CONFIG_HOME"
-	APP_DATA        = "AppData"
+	RfConfigDir   = "GH_CONFIG_DIR"
+	XdgConfigHome = "XDG_CONFIG_HOME"
+	AppData       = "AppData"
+
+	Dir      = ".config"
+	FileName = "rf"
+	FileExt  = "yml"
 )
 
-var Dir = getDir()
-var Path = filepath.Join(Dir, "config.toml")
+var CurrentPath = ""
 
-// getDir return folder that contains config
-func getDir() string {
+func GetConfigFile() string {
+	if CurrentPath != "" {
+		return CurrentPath
+	}
+	return fmt.Sprintf("%s/%s.%s", GetConfigHome(), FileName, FileExt)
+}
+
+func GetConfigHome() string {
 	var path string
-	if a := os.Getenv(RF_CONFIG_DIR); a != "" {
+	if a := os.Getenv(RfConfigDir); a != "" {
 		path = a
-	} else if b := os.Getenv(XDG_CONFIG_HOME); b != "" {
-		path = filepath.Join(b, "rf")
-	} else if c := os.Getenv(APP_DATA); runtime.GOOS == "windows" && c != "" {
-		path = filepath.Join(c, "RF CLI")
+	} else if b := os.Getenv(XdgConfigHome); b != "" {
+		path = b
+	} else if c := os.Getenv(AppData); runtime.GOOS == "windows" && c != "" {
+		path = c
 	} else {
 		d, _ := os.UserHomeDir()
-		path = filepath.Join(d, ".config", "rf")
+		path = filepath.Join(d, Dir)
 	}
 
 	return path
-}
-
-func fileExists(path string) bool {
-	f, err := os.Stat(path)
-	return err == nil && !f.IsDir()
 }

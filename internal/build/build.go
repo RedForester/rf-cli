@@ -4,7 +4,7 @@ import "runtime/debug"
 
 var (
 	Version = "DEV"
-	Date    = ""
+	Date    = "NOT_SET"
 )
 
 func init() {
